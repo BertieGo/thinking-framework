@@ -1,0 +1,127 @@
+{
+  "src": "index.html",
+  "url": "file:///home/user/Doubao/chats/38447431945399810/thinking-framework-course/index.html",
+  "outdir": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots",
+  "include": [
+    "lint",
+    "screenshots",
+    "structure"
+  ],
+  "shots": {
+    "desktop": {
+      "revealed": 0,
+      "screenshot": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots/index_desktop.jpg",
+      "screenshotBytes": 83643,
+      "truncated": false,
+      "structure": {
+        "title": "思维框架实战课 · 课程地图",
+        "firstH1": "想清楚，说清楚，做明白",
+        "viewport": {
+          "w": 1440,
+          "h": 900
+        },
+        "fullpage": {
+          "w": 1440,
+          "h": 2102
+        },
+        "counts": {
+          "section": 3,
+          "h1": 1,
+          "h2": 3,
+          "img": 0,
+          "canvas": 0,
+          "svg": 0,
+          "links": 12,
+          "buttons": 0
+        }
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "horizontalOverflow": [],
+      "resourceErrors": []
+    },
+    "mobile": {
+      "revealed": 0,
+      "screenshot": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots/index_mobile.jpg",
+      "screenshotBytes": 97337,
+      "truncated": false,
+      "structure": {
+        "title": "思维框架实战课 · 课程地图",
+        "firstH1": "想清楚，说清楚，做明白",
+        "viewport": {
+          "w": 390,
+          "h": 844
+        },
+        "fullpage": {
+          "w": 390,
+          "h": 2528
+        },
+        "counts": {
+          "section": 3,
+          "h1": 1,
+          "h2": 3,
+          "img": 0,
+          "canvas": 0,
+          "svg": 0,
+          "links": 12,
+          "buttons": 0
+        }
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "horizontalOverflow": [],
+      "resourceErrors": []
+    }
+  },
+  "engine": "playwright",
+  "chromiumExec": "/opt/vm/preinstall/ms-playwright/chromium-1169/chrome-linux/chrome",
+  "elapsedSec": 6.55,
+  "schemaVersion": 2,
+  "status": "pass",
+  "engineInfo": {
+    "name": "playwright",
+    "degraded": false,
+    "degradedReasons": []
+  },
+  "input": {
+    "original": "index.html",
+    "resolvedPath": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/index.html",
+    "baseUrl": "file:///home/user/Doubao/chats/38447431945399810/thinking-framework-course/index.html",
+    "protocol": "file",
+    "cwd": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course",
+    "mediaMode": {
+      "reducedMotion": true
+    }
+  },
+  "artifacts": {
+    "screenshots": [
+      {
+        "viewport": "desktop",
+        "path": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots/index_desktop.jpg",
+        "size": 83643,
+        "visualCoverage": {
+          "complete": true,
+          "reason": null
+        }
+      },
+      {
+        "viewport": "mobile",
+        "path": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots/index_mobile.jpg",
+        "size": 97337,
+        "visualCoverage": {
+          "complete": true,
+          "reason": null
+        }
+      }
+    ]
+  },
+  "summary": {
+    "blocker": 0,
+    "error": 0,
+    "warning": 0,
+    "info": 0
+  },
+  "findings": [],
+  "prioritizedActions": [],
+  "reportPath": "/home/user/Doubao/chats/38447431945399810/thinking-framework-course/_shots/report.json"
+}

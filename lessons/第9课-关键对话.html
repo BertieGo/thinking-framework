@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第9课 关键对话：高风险对话怎么谈</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M9 12h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-8l-4 3v-3H9a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z' fill='%23C08A2D'/%3E%3Ccircle cx='24' cy='9' r='2.6' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.6rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.35rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:22px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 信息池舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:230px;margin-top:34px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.figure{position:absolute;bottom:16px;width:74px;height:74px}
+.figure svg{width:100%;height:100%}
+.figure-l{left:2px}.figure-r{right:2px}
+.fig-bubble{position:absolute;width:52px;height:34px;background:rgba(192,138,45,.16);border:1.5px solid var(--gold);border-radius:12px;top:118px;left:8px;opacity:0}
+.fig-bubble::after{content:"";position:absolute;bottom:-7px;left:50%;margin-left:-6px;border:7px solid transparent;border-top-color:rgba(192,138,45,.16)}
+#bubR{left:auto;right:8px}
+.drip{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--gold);top:150px;left:39px;margin-left:-3.5px;opacity:0}
+#dripR{left:auto;right:39px;background:#7FB8A5}
+.drip.on{animation:dripFall .9s ease-in .3s 3}
+@keyframes dripFall{0%{opacity:0;transform:translateY(0)}12%{opacity:1}100%{opacity:0;transform:translateY(36px)}}
+.pool{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:100%;height:128px}
+.pool-bowl{position:absolute;inset:0;border:2px solid rgba(192,138,45,.5);border-bottom:none;border-radius:180px 180px 24px 24px;background:rgba(192,138,45,.05)}
+.pool-water{position:absolute;left:4px;right:4px;bottom:4px;height:6%;border-radius:140px 140px 16px 16px;background:linear-gradient(180deg,rgba(192,138,45,.75),rgba(192,138,45,.35));transition:height .5s ease}
+.pool-water::before{content:"";position:absolute;top:-2px;left:0;right:0;height:3px;background:rgba(251,248,241,.35);border-radius:2px}
+.bridge{position:absolute;left:50%;top:120px;width:min(430px,70%);transform:translateX(-50%);height:2px;background:rgba(251,248,241,.0)}
+.bridge-fill{width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold) 70%,transparent);transform-origin:left;transform:scaleX(0)}
+.stage.conn .bridge-fill{animation:bridgeIn 1.6s ease .2s forwards}
+@keyframes bridgeIn{to{transform:scaleX(1)}}
+.pool-tag{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.4em;color:rgba(251,248,241,.75);white-space:nowrap}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.06rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;letter-spacing:.06em}
+.tag.y{background:rgba(192,138,45,.16);color:#8A641C}
+.tag.n{background:rgba(90,100,120,.14);color:var(--muted)}
+.tag.h{background:rgba(201,79,56,.14);color:var(--coral)}
+.tag.g{background:rgba(62,124,111,.15);color:var(--teal)}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 三态行 */
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.tri-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .18s ease}
+.tri-item:hover{border-color:var(--coral)}
+.tri-item h4{font-family:var(--serif);font-size:1.5rem;font-weight:900;color:var(--ink)}
+.tri-item .sub{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.tri-item .detail{display:none;font-size:.92rem;border-top:1px dashed var(--line);padding-top:10px}
+.tri-item.open{border-color:var(--coral);background:#FDF7F4}
+.tri-item.open .detail{display:block}
+
+/* 滑块实验 */
+.lab{background:var(--ink);color:var(--white);border-radius:18px;padding:30px 26px;margin:26px 0}
+.lab h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.lab .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch}
+.lab-stage{position:relative;height:200px;margin:22px 0 6px}
+.lab-fig{position:absolute;bottom:6px;width:58px;height:58px;opacity:.95}
+.lab-fig svg{width:100%;height:100%}
+.lab-fig.l{left:12%}.lab-fig.r{right:12%}
+.lab-pool{position:absolute;left:50%;transform:translateX(-50%);bottom:4px;width:min(430px,86%);height:120px}
+.lab-bowl{position:absolute;inset:0;border:2px solid rgba(192,138,45,.55);border-bottom:none;border-radius:150px 150px 20px 20px}
+.lab-water{position:absolute;left:4px;right:4px;bottom:4px;height:8%;border-radius:130px 130px 14px 14px;background:linear-gradient(180deg,rgba(192,138,45,.85),rgba(192,138,45,.4));transition:height .3s ease}
+.lab-leak{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;color:#E8A08F;letter-spacing:.2em;opacity:0;transition:opacity .3s}
+.lab-note{font-size:13px;color:rgba(251,248,241,.7);min-height:22px;transition:opacity .3s}
+.lab-control{display:flex;align-items:center;gap:16px;margin-top:8px;flex-wrap:wrap}
+.lab-control label{font-size:13px;color:rgba(251,248,241,.8);white-space:nowrap}
+input[type=range]{flex:1;min-width:180px;accent-color:var(--gold);height:34px}
+.lab-readout{font-family:var(--serif);font-weight:700;color:var(--gold);min-width:74px;text-align:right}
+.decision{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:.93rem}
+.decision .bar{flex:1;height:10px;border-radius:6px;background:rgba(251,248,241,.14);overflow:hidden}
+.decision .fill{height:100%;width:10%;border-radius:6px;background:var(--gold);transition:width .3s ease}
+.decision .label{min-width:120px;color:rgba(251,248,241,.8)}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+.formula{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip{font-size:.88rem;font-weight:600;padding:5px 12px;border-radius:20px;border:1.5px solid var(--gold);color:#8A641C;background:rgba(192,138,45,.1)}
+.chip.s{color:var(--teal);border-color:var(--teal);background:rgba(62,124,111,.1)}
+
+/* 对话对照 */
+.dlg-tabs{display:flex;gap:0;margin:22px 0 0;border-bottom:2px solid var(--ink)}
+.dlg-tab{flex:1;text-align:center;padding:12px;font-weight:700;font-size:.98rem;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--sans);border-radius:10px 10px 0 0}
+.dlg-tab.on{background:var(--ink);color:var(--white)}
+.dlg-pane{display:none;border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:20px 18px}
+.dlg-pane.on{display:block}
+.dlg-line{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.dlg-who{flex:none;width:74px;font-size:.82rem;font-weight:700;padding-top:3px}
+.dlg-who.me{color:var(--coral)}.dlg-who.other{color:var(--teal)}
+.dlg-say{flex:1}
+.dlg-say .txt{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.dlg-say .why{font-size:.8rem;color:var(--gold);margin-top:4px}
+.dlg-bad{background:#F6E6E0;border-left:3px solid var(--coral);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+.dlg-good{background:var(--teal-soft);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .tri{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:200px}
+  .figure{width:56px;height:56px}
+  .fig-bubble{top:118px;left:4px}
+  #bubR{left:auto;right:4px}
+  .drip{left:31px}
+  #dripR{right:31px;left:auto}
+  .lab{padding:24px 18px}
+  .lab-fig{width:46px;height:46px}
+  .dlg-who{width:56px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .pool-water{height:55%}
+  .bridge-fill{transform:scaleX(1)}
+  .scroll-hint{animation:none}
+  .card,.tri-item,.step-head,.q-opt,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="fig-bubble" id="bubL"></div>
+    <div class="fig-bubble" id="bubR" style="border-color:rgba(62,124,111,.6);background:rgba(62,124,111,.14)"></div>
+    <div class="drip" id="dripL"></div>
+    <div class="drip" id="dripR" style="background:#7FB8A5"></div>
+    <div class="figure figure-l">
+      <svg viewBox="0 0 74 74" fill="none">
+        <circle cx="37" cy="24" r="11" fill="#FBF8F1"/>
+        <path d="M15 66c2-14 11-20 22-20s20 6 22 20" fill="#FBF8F1"/>
+      </svg>
+    </div>
+    <div class="figure figure-r">
+      <svg viewBox="0 0 74 74" fill="none">
+        <circle cx="37" cy="24" r="11" fill="#FBF8F1"/>
+        <path d="M15 66c2-14 11-20 22-20s20 6 22 20" fill="#FBF8F1"/>
+      </svg>
+    </div>
+    <div class="pool">
+      <div class="pool-bowl"></div>
+      <div class="pool-water" id="heroWater"></div>
+      <div class="pool-tag" id="poolTag">信息池</div>
+    </div>
+    <div class="bridge"><div class="bridge-fill"></div></div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 沟 通 篇 第 3 课</div>
+    <h1>关键对话<span class="accent">怎么谈</span></h1>
+    <div class="hero-sub">越重要的事，越容易谈崩。这节课给你一套<br class="br">在高压下依然说得出口、听得进去的方法。</div>
+    <div class="hero-meta">高利害 × 观点分歧 × 情绪强烈</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 什么是关键对话 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">什么是关键对话</h2>
+    <span class="sec-sub">先认出它，才有机会赢</span>
+  </div>
+  <p class="lead">关键对话不是"重要的会"，而是三种情况至少占一种：<b class="strong">结果影响大、观点有分歧、情绪上来了</b>。谈崩了代价很高，双方各说各话，谁也不想让。</p>
+  <p>它最坑的地方在于：<b>越关键，人越发挥失常</b>。你平时能说会道，一到这种场合反而结巴、上头或者直接沉默。这不是你嘴笨，是大脑在高压下切到了本能模式。</p>
+  <div class="callout red"><p><b>记住：</b>判断一场对话是不是"关键对话"，只需要问一句——<b>谈崩了，我要付出多大代价？</b>代价大，就得按关键对话来打。</p></div>
+
+  <p class="kicker">练一练：点一下，判断这些是不是关键对话</p>
+  <div class="cards" id="sceneCards">
+    <div class="card" data-y="1"><h4><span class="tag y">关键</span>跟领导谈涨薪</h4><p class="hint">点开看理由</p><div class="why">高利害（直接影响收入与关系）+ 观点分歧（你觉得值，他觉得未必）+ 情绪。三样占全。</div></div>
+    <div class="card" data-y="0"><h4><span class="tag n">日常</span>同事问中午吃什么</h4><p class="hint">点开看理由</p><div class="why">谈崩了几乎没代价，顶多各吃各的。不是关键对话。</div></div>
+    <div class="card" data-y="1"><h4><span class="tag y">关键</span>队友延期两周，找他摊牌排期</h4><p class="hint">点开看理由</p><div class="why">高利害（影响整个项目节点）+ 观点分歧（他认为合理，你认为失控）+ 情绪。典型关键对话。</div></div>
+    <div class="card" data-y="0"><h4><span class="tag n">日常</span>群里有人发广告没人说话</h4><p class="hint">点开看理由</p><div class="why">你根本没有利害关系，也不是你的对话。忽略即可。</div></div>
+    <div class="card" data-y="1"><h4><span class="tag y">关键</span>客户投诉交付质量差</h4><p class="hint">点开看理由</p><div class="why">高利害（订单、口碑）+ 情绪（对方带着火，你也委屈）。必须按关键对话处理。</div></div>
+    <div class="card" data-y="0"><h4><span class="tag n">轻度</span>商量周末去哪</h4><p class="hint">点开看理由</p><div class="why">观点可能分歧，但利害低。属于"轻关键"，练手首选——谈好了再上大场面。</div></div>
+  </div>
+  <div class="callout teal"><p><b>用法：</b>判断本身不重要，重要的是<b>判断完别硬聊</b>——是关键的，就按下面的流程走；不是关键的，别浪费情绪。</p></div>
+</section>
+
+<!-- ===== 视图：02 大脑为什么会空白 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">大脑为什么会空白</h2>
+    <span class="sec-sub">不是性格问题，是生理反应</span>
+  </div>
+  <p class="lead">高压瞬间，身体会分泌应激激素，前额叶（负责理性思考的部分）暂时掉线，负责情绪的杏仁核接管。于是你只剩三种本能：<b class="strong">打、逃、僵</b>。</p>
+  <p>上一课我们聊过"大脑一片空白"——那就是<b>僵</b>。它不是无能，是身体在替你紧急避险。问题是：三种本能都会把对话推得更远。</p>
+
+  <div class="tri" id="triStates">
+    <div class="tri-item"><h4>打</h4><div class="sub">Fight · 攻击</div><div class="detail">抢话、反驳、贴标签、翻旧账。典型台词："你怎么又……！"代价：对方进入防御，你说得再对也没人听。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看代价</p></div>
+    <div class="tri-item"><h4>逃</h4><div class="sub">Flight · 回避</div><div class="detail">转移话题、假装没事、拖延。"改天再说""都行都行"。代价：问题没解决，对方觉得你不在乎，火更大。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看代价</p></div>
+    <div class="tri-item"><h4>僵</h4><div class="sub">Freeze · 空白</div><div class="detail">大脑空白、说不出话、点头糊弄。代价：当场认了不该认的，事后越想越气，问题照样没解决。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看代价</p></div>
+  </div>
+
+  <div class="callout"><p><b>关键认知：</b>这三种反应都不是你的"性格"，是身体的本能。所以第一步永远不是"我该怎么怼回去"，而是<b>先把自己的状态拉回来</b>——状态不对，方法再好也白搭。</p></div>
+</section>
+
+<!-- ===== 视图：03 核心心法 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">核心心法：把信息池装满</h2>
+    <span class="sec-sub">关键对话不是辩论，是往池子里倒水</span>
+  </div>
+  <p class="lead">关键对话的目标<b class="strong">不是赢，是把双方的事实、判断、顾虑全部倒进同一个"信息池"</b>，然后基于一个更满的池子做决策。</p>
+  <p>池子满，决策才靠谱；池子只有一半——一方藏着不说——决策必然是猜的。<b>对方不说话、或者开始攻击，不是他人品差，是安全感不够</b>：他怕说了更糟。</p>
+  <p>所以整节课的所有技巧，只为一件事服务：<b class="strong">维持足够的安全感，让双方都敢往里倒</b>。</p>
+
+  <div class="lab" id="lab">
+    <h3>试一试：拖动「安全感」，看信息池水位</h3>
+    <p class="desc">左侧是你，右侧是对方。安全感足，双方敢倒水，池子满，决策靠谱；安全感崩了，对方停手甚至泼水，池子见底，决策靠猜。</p>
+    <div class="lab-stage">
+      <div class="lab-fig l"><svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="18" r="9" fill="#FBF8F1"/><path d="M12 52c2-12 9-17 17-17s15 5 17 17" fill="#FBF8F1"/></svg></div>
+      <div class="lab-fig r" id="labFigR"><svg viewBox="0 0 58 58" fill="none"><circle cx="29" cy="18" r="9" fill="#FBF8F1"/><path d="M12 52c2-12 9-17 17-17s15 5 17 17" fill="#FBF8F1"/></svg></div>
+      <div class="lab-pool"><div class="lab-bowl"></div><div class="lab-water" id="labWater"></div></div>
+      <div class="lab-leak" id="labLeak">对 方 停 手 · 池 子 在 漏</div>
+    </div>
+    <div class="lab-note" id="labNote">拖到 40 以上，对方才会开始倒水。</div>
+    <div class="lab-control">
+      <label for="safetySlider">安全感</label>
+      <input type="range" id="safetySlider" min="0" max="100" value="30">
+      <span class="lab-readout" id="safetyVal">30</span>
+    </div>
+    <div class="decision">
+      <span class="label" id="decisionLabel">决策靠猜</span>
+      <div class="bar"><div class="fill" id="decisionFill" style="width:12%"></div></div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b>一句口诀：</b>安全感没了，说什么都对不了。先修安全感，再谈事。</p></div>
+</section>
+
+<!-- ===== 视图：04 四步实战法 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">四步实战法</h2>
+    <span class="sec-sub">安顿自己 → 造安全感 → 说清楚 → 听明白</span>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">0</span><span class="step-title">先安顿自己<small>开口前 30 秒，问自己三个问题</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p><b>1.</b> 抛开情绪，我<u>真正想要</u>的是什么？<br><b>2.</b> 我<u>不想要</u>的是什么（比如不想撕破脸、不想伤感情）？<br><b>3.</b> 我现在的反应，能帮我达成目标吗？——不能，就换。</p>
+        <div class="eg"><b>例：</b>队友延期，你气得想骂人。三个问题一过：想要的是保住 16 号联调；不想要的是闹僵以后更难协作；骂人显然没用。<b>于是你选择谈事，不骂人。</b></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">营造安全感<small>对方沉默或暴力的那一刻，先修这个</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>先观察：对方是<b>沉默</b>（不说）还是<b>暴力</b>（攻击）？都是安全感受损的信号。修复三招：</p>
+        <div class="formula"><span class="chip">真错了就道歉</span><span class="chip">对比说明：否认误解 + 讲清意图</span><span class="chip">共同目的：把"我对你"变成"我们一起对问题"</span></div>
+        <div class="eg"><b>例：</b>"我不是说你的方案不行（否认误解），我是担心 16 号联调来不及（真实意图）。咱俩都想让项目顺利上线（共同目的）。"</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">STATE 表达：说，但不审判<small>先讲事实，再说解读，最后邀请对方补充</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <div class="formula">
+          <span class="chip s">S 事实</span><span class="chip">T 故事</span><span class="chip">A 邀请</span><span class="chip">T 试探</span><span class="chip">E 鼓励反驳</span>
+        </div>
+        <p><b>S</b> Share facts：只说可核对的客观事实，不贴标签。<br><b>T</b> Tell your story：再说你的解读，并明说"这是我的判断"。<br><b>A</b> Ask：邀请对方补充："我漏了什么吗？"<br><b>T</b> Talk tentatively：软着说，不用"你肯定、明明就是"。<br><b>E</b> Encourage testing："如果我说得不对，你直接纠正我。"</p>
+        <div class="eg"><b>例：</b>"周三你还没交周报（事实），我担心进度会失控（故事，我的判断），是我漏了什么吗？（邀请）"——而不是"你怎么老不负责！"（标签）</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">AMPP 倾听：让对方先痛快<small>先被听懂的人，才愿意听你说</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <div class="formula">
+          <span class="chip s">A 问</span><span class="chip">M 镜像</span><span class="chip">P 复述</span><span class="chip">P 抛砖</span>
+        </div>
+        <p><b>A</b> Ask：先问，别急着判断。<br><b>M</b> Mirror：点出对方的情绪状态："听起来你很憋屈？"<br><b>P</b> Paraphrase：用自己的话重说对方内容，确认听懂。<br><b>P</b> Prime：对方说不出口时，替他说出最可能的顾虑，降低开口门槛。</p>
+        <div class="eg"><b>例：</b>"你是不是担心，环境给不了又要怪到你头上？（抛砖）"——一句话，对方憋着的事就开了口。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>用法：</b>四步不是背台词，是四根救命绳。卡住了就抓住最近的那一根：<b>上头了抓第 0 步，冷场了抓第 1 步，说不清抓第 2 步，听不懂抓第 3 步。</b></p></div>
+</section>
+
+<!-- ===== 视图：05 完整示范 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">一段完整示范</h2>
+    <span class="sec-sub">同一件事，两种谈法</span>
+  </div>
+  <p class="lead">场景：队友延期两周，你约他谈。左边是本能版，右边是四步法版。</p>
+
+  <div class="dlg-tabs">
+    <button class="dlg-tab on" id="tabBad">本能版 · 越谈越崩</button>
+    <button class="dlg-tab" id="tabGood">关键对话版 · 问题落地</button>
+  </div>
+
+  <div class="dlg-pane on" id="paneBad">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"你怎么又拖了？说好的 15 号呢！"</div><div class="why">翻旧账 + 贴标签，对方瞬间进入防御。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">队友</span><div class="dlg-say"><div class="txt">"我天天加班你看不见？测试环境一直没给我！"</div><div class="why">开始反击，问题被转移到"你冤枉我"。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"那不是理由，别人怎么都能做？"</div><div class="why">攻击升级，对话变成互相证明"我对你错"。</div></div></div>
+    <div class="dlg-bad">结果：吵完，问题没解决，关系还僵了。信息池见底。</div>
+  </div>
+
+  <div class="dlg-pane" id="paneGood">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">（内心）我想要保住 16 号联调；我不想撕破脸；发火没用。</div><div class="why">第 0 步：先安顿自己，三个问题过一遍。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"我不是来追责的，是想跟你一起把上线保住。你那边现在卡在哪？"</div><div class="why">第 1 步：否认误解 + 共同目的，先给安全感。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">队友</span><div class="dlg-say"><div class="txt">"测试环境一直没给我，我改不了，只能干等。"</div><div class="why">安全感够，他开始说实话。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"听起来你很憋屈，等环境这周耗了好几天了，对吧？除了环境，还有别的卡点吗？"</div><div class="why">第 3 步：镜像 + 复述 + 继续问，把剩下的顾虑也挖出来。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">队友</span><div class="dlg-say"><div class="txt">"还有就是文档一直没人 review……"</div><div class="why">真正的卡点浮出水面——不止一个。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"好，环境我明天去催运维；你周三前把要 review 的清单发我。咱先让它转起来。"</div><div class="why">收尾：各自领活，下一步明确。</div></div></div>
+    <div class="dlg-good">结果：问题拆开、各自认领。池子满了，决策自然落地。</div>
+  </div>
+</section>
+
+<!-- ===== 视图：06 自测 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 关键对话的三个特征是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">重要的事、人多、时间长</button>
+        <button class="q-opt" data-ok="1">高利害 × 观点分歧 × 情绪强烈</button>
+        <button class="q-opt" data-ok="0">开会、争论、加班</button>
+      </div>
+      <div class="q-feedback">三样至少占一样，就算关键对话：谈崩代价大、双方各说各话、情绪已经上来。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 对方突然沉默、不肯说话，最可能说明什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">他默认同意了</button>
+        <button class="q-opt" data-ok="1">他安全感不足，怕说了更糟</button>
+        <button class="q-opt" data-ok="0">他单纯讨厌你</button>
+      </div>
+      <div class="q-feedback">沉默是安全感受损的信号。这时要先修安全感，而不是逼问"你到底怎么想的"。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. STATE 表达法里的 S 是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">先讲事实，不贴标签</button>
+        <button class="q-opt" data-ok="0">先道歉</button>
+        <button class="q-opt" data-ok="0">先问对方</button>
+      </div>
+      <div class="q-feedback">S = Share facts。说"周三没交周报"是事实；说"你总是不负责"是标签。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 对方劈头盖脸骂你，第一步该做什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">马上反驳回去</button>
+        <button class="q-opt" data-ok="1">先安顿自己，把状态拉回来</button>
+        <button class="q-opt" data-ok="0">也发火，气势不能输</button>
+      </div>
+      <div class="q-feedback">本能会让你"打回去"，但那是 fight。先问三个"我想要"，状态回来再谈。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. "信息池"心法，一句话怎么说？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">谁声音大听谁的</button>
+        <button class="q-opt" data-ok="1">让双方敢把事实和顾虑全倒出来，池子满了，决策才靠谱</button>
+        <button class="q-opt" data-ok="0">少说话就不会错</button>
+      </div>
+      <div class="q-feedback">关键对话不是辩论赛。赢不赢不重要，池子满不满才决定决策质量。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：07 作业与复盘 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">作业：练一次，比读十遍有用</h2>
+    <span class="sec-sub">这周挑一场真实对话，走一遍</span>
+  </div>
+  <p class="lead">别找太难的。从"轻关键"开始：跟同事对齐一件事、跟家人商量一个决定，都可以。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>对话目标</th><td>我想达成什么？</td></tr>
+    <tr><th>三特征</th><td>高利害 / 分歧 / 情绪，占了几个？</td></tr>
+    <tr><th>本能反应</th><td>我是打、逃、还是僵？</td></tr>
+    <tr><th>该用哪招</th><td>安顿自己 / 安全感 / STATE / AMPP</td></tr>
+    <tr><th>下次改进</th><td>一句话，下次先做哪一步？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="把这周的对话按上面的问题填在这里，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 9 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课（非暴力沟通 · 金字塔表达 · 关键对话）<br>
+  下一课预告：进入「干活篇」，把思考与沟通变成行动。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var water = document.getElementById('heroWater');
+  var stage = document.getElementById('stage');
+  var bubL = document.getElementById('bubL'), bubR = document.getElementById('bubR');
+  var dripL = document.getElementById('dripL'), dripR = document.getElementById('dripR');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ water.style.height = '58%'; }, 1600);
+  t = setTimeout(function(){ bubL.style.opacity = '1'; bubR.style.opacity = '1'; }, 2600);
+  t = setTimeout(function(){ dripL.classList.add('on'); dripR.classList.add('on'); }, 3000);
+  t = setTimeout(function(){ stage.classList.add('conn'); }, 3400);
+
+  /* ===== 场景判断卡 ===== */
+  document.querySelectorAll('#sceneCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 三态卡 ===== */
+  document.querySelectorAll('#triStates .tri-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      document.querySelectorAll('#triStates .tri-item').forEach(function(x){ x.classList.remove('open'); });
+      item.classList.add('open');
+    });
+  });
+
+  /* ===== 安全感实验 ===== */
+  var slider = document.getElementById('safetySlider');
+  var labWater = document.getElementById('labWater');
+  var labNote = document.getElementById('labNote');
+  var labLeak = document.getElementById('labLeak');
+  var labFigR = document.getElementById('labFigR');
+  var safetyVal = document.getElementById('safetyVal');
+  var dLabel = document.getElementById('decisionLabel');
+  var dFill = document.getElementById('decisionFill');
+  function updateLab(){
+    var v = parseInt(slider.value, 10);
+    safetyVal.textContent = v;
+    var level, note, label, width;
+    if (v < 40) {
+      level = 6 + v * 0.22;
+      note = '安全感不足：对方闭嘴甚至防御，关键信息藏着——池子见底，决策靠猜。';
+      label = '决策靠猜'; width = v * 0.3;
+      labFigR.style.opacity = '0.35'; labFigR.style.transform = 'rotate(8deg)';
+      labLeak.style.opacity = '1';
+    } else if (v < 70) {
+      level = 30 + (v - 40) * 0.8;
+      note = '安全感还行：对方开始倒水，但倒得不痛快，关键顾虑还藏着——决策偏了。';
+      label = '决策偏了'; width = 25 + (v - 40) * 1.1;
+      labFigR.style.opacity = '1'; labFigR.style.transform = 'none';
+      labLeak.style.opacity = '0';
+    } else {
+      level = 60 + (v - 70) * 1.3;
+      note = '安全感充足：双方敢把事实、顾虑全倒出来——池子满了，决策才靠谱。';
+      label = '决策靠谱'; width = 68 + (v - 70) * 0.9;
+      labFigR.style.opacity = '1'; labFigR.style.transform = 'none';
+      labLeak.style.opacity = '0';
+    }
+    if (level > 94) level = 94;
+    labWater.style.height = level + '%';
+    labNote.textContent = note;
+    dLabel.textContent = label;
+    dFill.style.width = width + '%';
+    dFill.style.background = v >= 70 ? 'var(--teal)' : 'var(--gold)';
+  }
+  slider.addEventListener('input', updateLab);
+  updateLab();
+
+  /* ===== 四步法折叠 ===== */
+  document.querySelectorAll('#steps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#steps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 对话对照 ===== */
+  var tabBad = document.getElementById('tabBad'), tabGood = document.getElementById('tabGood');
+  var paneBad = document.getElementById('paneBad'), paneGood = document.getElementById('paneGood');
+  function showPane(good){
+    tabBad.classList.toggle('on', !good);
+    tabGood.classList.toggle('on', good);
+    paneBad.classList.toggle('on', !good);
+    paneGood.classList.toggle('on', good);
+  }
+  tabBad.addEventListener('click', function(){ showPane(false); });
+  tabGood.addEventListener('click', function(){ showPane(true); });
+
+  /* ===== 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。练一场真的吧。' : ' —— 回去看 03、04 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【关键对话复盘】'];
+    var keys = ['对话目标','三特征','本能反应','该用哪招','下次改进'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

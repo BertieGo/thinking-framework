@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第2课 第一性原理：回到基本事实重新算</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M7 25h18L16 9z' fill='%23C08A2D'/%3E%3Crect x='13.5' y='18' width='5' height='4' fill='%233E7C6F'/%3E%3Ccircle cx='25' cy='8' r='2.6' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 拆楼重建舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:250px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.blk{position:absolute;left:50%;top:28%;width:48px;height:34px;margin-left:-24px;margin-top:-17px;border-radius:5px;
+  background:rgba(94,110,145,.85);border:1.5px solid rgba(251,248,241,.35);
+  transform:translate(var(--tx0),var(--ty0)) rotate(var(--tr0));
+  transition:transform .7s cubic-bezier(.4,0,.3,1),background .5s ease,border-color .5s ease}
+/* 旧楼：歪歪扭扭的补丁塔 */
+.b1{--tx0:-30px;--ty0:-34px;--tr0:-5deg}
+.b2{--tx0:24px;--ty0:-28px;--tr0:4deg}
+.b3{--tx0:-14px;--ty0:-2px;--tr0:6deg}
+.b4{--tx0:20px;--ty0:4px;--tr0:-4deg}
+.b5{--tx0:-26px;--ty0:28px;--tr0:3deg}
+.b6{--tx0:8px;--ty0:34px;--tr0:-6deg}
+/* play：拆成散落的基本块 */
+.stage.play .blk{background:rgba(192,138,45,.85);border-color:rgba(251,248,241,.5);transform:translate(var(--tx1),var(--ty1)) rotate(var(--tr1))}
+.b1{--tx1:-130px;--ty1:50px;--tr1:20deg}
+.b2{--tx1:130px;--ty1:40px;--tr1:-18deg}
+.b3{--tx1:-110px;--ty1:90px;--tr1:12deg}
+.b4{--tx1:115px;--ty1:95px;--tr1:-24deg}
+.b5{--tx1:-55px;--ty1:135px;--tr1:15deg}
+.b6{--tx1:75px;--ty1:135px;--tr1:-12deg}
+/* done：从地基重建为稳固金字塔 */
+.stage.done .blk{transform:translate(var(--tx2),var(--ty2)) rotate(0deg)}
+.b1{--tx2:-52px;--ty2:120px}
+.b2{--tx2:-26px;--ty2:84px}
+.b3{--tx2:0px;--ty2:48px}
+.b4{--tx2:26px;--ty2:84px}
+.b5{--tx2:0px;--ty2:120px}
+.b6{--tx2:52px;--ty2:120px}
+.stage.done .blk.t{background:rgba(62,124,111,.95);border-color:rgba(251,248,241,.5)}
+.basebar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(300px,72%);height:4px;border-radius:2px;background:var(--gold);opacity:0;transition:opacity .6s ease}
+.stage.done .basebar{opacity:1}
+.stag-tag{position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.35em;color:rgba(251,248,241,.72);opacity:0;white-space:nowrap;transition:opacity .5s}
+.stage.play .tagA{opacity:1}
+.stage.done .tagA{opacity:0}
+.stage.done .tagB{opacity:1;transition:opacity .5s ease .4s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.06rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;letter-spacing:.06em}
+.tag.y{background:rgba(192,138,45,.16);color:#8A641C}
+.tag.n{background:rgba(90,100,120,.14);color:var(--muted)}
+.tag.h{background:rgba(201,79,56,.14);color:var(--coral)}
+.tag.g{background:rgba(62,124,111,.15);color:var(--teal)}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+
+/* 成本拆解计算器（深色实验台） */
+.matrix{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.matrix h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.matrix .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch;margin-bottom:16px}
+.c-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr 1.2fr;gap:8px;align-items:center;margin-bottom:8px}
+.c-grid .cell{background:rgba(251,248,241,.06);border-radius:8px;padding:8px 10px;font-size:.9rem;text-align:center}
+.c-grid .cell.name{background:none;text-align:left;padding-left:4px;font-weight:600}
+.c-grid .cell.h{background:rgba(192,138,45,.14);font-weight:700;font-size:.86rem}
+.c-grid input{width:100%;min-width:0;background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);color:var(--white);border-radius:6px;padding:8px 6px;font-family:var(--sans);font-size:1rem;text-align:center}
+.c-grid input:focus{outline:none;border-color:var(--gold)}
+.c-grid .sub{font-family:var(--serif);font-weight:700;color:#E8A08F}
+.c-total-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(251,248,241,.25);flex-wrap:wrap}
+.c-total-row .lb{font-size:.92rem;color:rgba(251,248,241,.75)}
+.c-total{font-family:var(--serif);font-weight:900;font-size:1.7rem;color:var(--gold)}
+.c-total small{font-size:.85rem;font-weight:400;color:rgba(251,248,241,.6);margin-left:6px}
+.c-note{font-size:.9rem;color:rgba(251,248,241,.7);margin-top:12px;min-height:22px}
+.c-vs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.c-vs .chipv{font-size:.85rem;padding:6px 12px;border-radius:20px;border:1.5px solid rgba(251,248,241,.35);color:rgba(251,248,241,.8)}
+.c-vs .chipv.gold{border-color:var(--gold);color:var(--gold);font-weight:700}
+
+/* 事实 vs 假设 判定 */
+.judge{margin:22px 0}
+.j-row{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px;margin:10px 0;transition:border-color .2s,background .2s}
+.j-row.right{border-color:var(--teal);background:var(--teal-soft)}
+.j-row.wrong{border-color:var(--coral);background:#F6E6E0}
+.j-stmt{margin:0 0 10px;font-size:.98rem;font-weight:600}
+.j-opts{display:flex;gap:10px;flex-wrap:wrap}
+.j-btn{flex:1;min-width:120px;min-height:44px;border:1.5px solid var(--line);background:var(--paper);border-radius:9px;padding:10px 14px;font-family:var(--sans);font-weight:700;font-size:.92rem;cursor:pointer;transition:border-color .15s,background .15s;color:var(--text)}
+.j-btn:hover{border-color:var(--gold)}
+.j-btn.sel-f{border-color:var(--teal);background:var(--teal-soft)}
+.j-btn.sel-a{border-color:var(--coral);background:#F6E6E0}
+.j-fb{display:none;font-size:.9rem;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.j-row.done .j-fb{display:block}
+.j-progress{font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px;margin-top:6px}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:225px}
+  .c-grid{grid-template-columns:1.2fr 1fr 1fr;gap:6px}
+  .c-grid .sub{grid-column:2 / -1;text-align:right;padding-right:4px}
+  .matrix{padding:22px 16px}
+  .c-total{font-size:1.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .blk{transform:translate(var(--tx2),var(--ty2)) rotate(0deg);background:rgba(192,138,45,.85)}
+  .blk.t{background:rgba(62,124,111,.95)}
+  .basebar{opacity:1}
+  .tagB{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.j-btn,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="stag-tag tagA">拆 成 基 本 块</div>
+    <div class="stag-tag tagB">从 地 基 重 建</div>
+    <div class="blk b1 t"></div>
+    <div class="blk b2"></div>
+    <div class="blk b3 t"></div>
+    <div class="blk b4"></div>
+    <div class="blk b5 t"></div>
+    <div class="blk b6"></div>
+    <div class="basebar"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 第 2 课</div>
+    <h1>第一性原理<span class="accent">怎么用</span></h1>
+    <div class="hero-sub">别人都在旧方案上打补丁，你敢不敢回到基本事实<br class="br">重新算一遍？这节课讲怎么把问题拆到不能再拆。</div>
+    <div class="hero-meta">拆到不可再拆 × 分清事实与假设 × 从地基重建</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 两种思考方式 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">两种思考方式</h2>
+    <span class="sec-sub">一种在旧楼里补窟窿，一种从地基重盖</span>
+  </div>
+  <p class="lead">面对一个问题，人脑默认走的是<b class="strong">类比思维</b>：别人怎么干、以前怎么干、同行都怎么干，照着来。第一性原理是另一条路：<b class="strong">把问题拆到不能再拆的基本事实，从地基往上重新建。</b></p>
+  <p>类比思维不是错——它快、省力、在成熟行业里八九不离十。它的坑在于：你拆都没拆，就接受了别人的地基。旧方案越修越贵，很多时候贵的不是材料，是没人重新算过账。</p>
+
+  <div class="cards" id="wayCards">
+    <div class="card"><h4><span class="tag n">类比</span>在旧方案上修补</h4><p class="hint">点开看适用与风险</p><div class="why">做法：看别人怎么做，照着改一改。"行业都这样""上次就这么干的"。成熟、稳定、可逆的事，这是最快的路。</div><div class="fix"><b>风险：</b>把"一直如此"当成"理应如此"。地基是别人定的，你只在别人的楼上加层，越叠越歪。</div></div>
+    <div class="card"><h4><span class="tag g">第一性</span>从基本事实重建</h4><p class="hint">点开看适用与代价</p><div class="why">做法：先问"哪些是不能再拆的基本事实"（物理定律、原材料价格、真实需求），再从这些事实往上推方案。</div><div class="fix"><b>代价：</b>慢、费脑。拆一遍的时间，够类比十遍。所以它只配用在重要、昂贵、反复踩坑的事上。</div></div>
+    <div class="card"><h4><span class="tag y">拆到哪层</span>什么算"基本事实"</h4><p class="hint">点开看判断标准</p><div class="why">判断标准：再往下拆，就解释不了它了。"这块铝多少钱一吨"可以查；"火箭就该贵"不是事实，是没拆透的结论。</div><div class="fix"><b>用法：</b>拆到"可核对"为止——能拿价格表、规格书、物理常数去验证的，才算地基。</div></div>
+    <div class="card"><h4><span class="tag h">边界</span>什么时候别拆</h4><p class="hint">点开看适用边界</p><div class="why">买瓶水、午饭吃什么、可逆的小决定——直接类比，拆一遍的时间比直接做还贵。</div><div class="fix"><b>一句话：</b>事越大、越贵、越反复踩坑，越值得拆。小事上，类比就是最优解。</div></div>
+  </div>
+
+  <div class="callout red"><p><b>记住：</b>第一性原理的对立面不是"经验"，而是<b>不问为什么就接受经验</b>。类比负责快，第一性负责准——大事上用谁，取决于代价。</p></div>
+</section>
+
+<!-- ===== 视图：02 案例：火箭为什么贵 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">案例：火箭到底贵在哪</h2>
+    <span class="sec-sub">公开案例：从原材料重新算一枚火箭</span>
+  </div>
+  <p class="lead">行业默认的说法是：<b class="strong">火箭就是贵</b>，发射一次几千万美元，因为历史上一直如此。这是典型的类比思维——贵的原因没有被拆过，只被重复过。</p>
+  <p>SpaceX 团队换了个拆法：不看"别人卖多少钱"，改问<b>这枚火箭实际由什么组成</b>——航空铝合金、钛合金、铜、碳纤维、航电元件。这些都是大宗商品，市场价明码标价。按公开报道里广为流传的说法：<b>这些原材料加起来，只相当于火箭售价的零头（约 2% 量级，示意口径）</b>。</p>
+  <p>结论不是"火箭公司暴利"，而是：<b>行业报价 ≠ 真实成本</b>。从原材料这层基本事实重新往上盖，答案完全不同——于是自己造，而不是买贵的成品。</p>
+
+  <p class="kicker">动手拆一拆：下面是一张极简的"火箭成本"拆解表（数字均为示意，只为演示拆法）</p>
+  <div class="matrix" id="costLab">
+    <h3>成本拆解计算器</h3>
+    <p class="desc">每一项 = 单价 × 数量。改任何一格，合计立刻重算。看的不是数字，是这个动作本身：先拆到基本项，再求和。</p>
+    <div class="c-grid">
+      <div class="cell name h">基本材料</div>
+      <div class="cell h">单价（万元/单位）</div>
+      <div class="cell h">数量</div>
+      <div class="cell h">小计（万元）</div>
+    </div>
+    <div class="c-grid" data-row="0">
+      <div class="cell name"><input type="text" id="nm0" value="铝合金结构件" aria-label="部件1名称"></div>
+      <div class="cell"><input type="number" id="u0" min="0" step="0.1" value="2.2" aria-label="部件1单价"></div>
+      <div class="cell"><input type="number" id="q0" min="0" step="0.1" value="2.5" aria-label="部件1数量"></div>
+      <div class="cell sub" id="sub0">—</div>
+    </div>
+    <div class="c-grid" data-row="1">
+      <div class="cell name"><input type="text" id="nm1" value="钛合金高温部件" aria-label="部件2名称"></div>
+      <div class="cell"><input type="number" id="u1" min="0" step="0.1" value="8.5" aria-label="部件2单价"></div>
+      <div class="cell"><input type="number" id="q1" min="0" step="0.1" value="0.8" aria-label="部件2数量"></div>
+      <div class="cell sub" id="sub1">—</div>
+    </div>
+    <div class="c-grid" data-row="2">
+      <div class="cell name"><input type="text" id="nm2" value="航电与传感器" aria-label="部件3名称"></div>
+      <div class="cell"><input type="number" id="u2" min="0" step="0.1" value="12" aria-label="部件3单价"></div>
+      <div class="cell"><input type="number" id="q2" min="0" step="0.1" value="0.3" aria-label="部件3数量"></div>
+      <div class="cell sub" id="sub2">—</div>
+    </div>
+    <div class="c-grid" data-row="3">
+      <div class="cell name"><input type="text" id="nm3" value="发动机原料（铜/高温合金）" aria-label="部件4名称"></div>
+      <div class="cell"><input type="number" id="u3" min="0" step="0.1" value="6" aria-label="部件4单价"></div>
+      <div class="cell"><input type="number" id="q3" min="0" step="0.1" value="1.2" aria-label="部件4数量"></div>
+      <div class="cell sub" id="sub3">—</div>
+    </div>
+    <div class="c-total-row">
+      <span class="lb">拆到基本材料后的合计</span>
+      <span class="c-total" id="cTotal">—<small>万元 · 示意</small></span>
+    </div>
+    <div class="c-vs">
+      <span class="chipv">市场上别人的报价：几千万量级（示意）</span>
+      <span class="chipv gold">从地基重算：零头</span>
+    </div>
+    <div class="c-note" id="cNote">同一堆材料，两种算法，差着一两个数量级。把你正在纠结的成本代进去试试。</div>
+  </div>
+</section>
+
+<!-- ===== 视图：03 事实与假设 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">分清事实与假设</h2>
+    <span class="sec-sub">地基只认可核对的东西</span>
+  </div>
+  <p class="lead">第一性思考有个前提动作：把你手里的每条判断分两堆——<b class="strong">事实</b>是可以查价、查规格、查数据当场核对的；<b class="strong">假设</b>是"一直如此""应该是""大家都这么说"，从没被你亲自验证过的。</p>
+  <p>地基里混进假设，楼盖到一半一定塌。大多数"我以为"，拆到最后都是从没核过的经验。下面五句，点开判断——它是事实，还是假设？</p>
+
+  <div class="judge" id="judge">
+    <div class="j-row" data-ok="1">
+      <p class="j-stmt">"这批铝合金今天的市场报价是每吨 2 万元（示意）。"</p>
+      <div class="j-opts">
+        <button class="j-btn" data-kind="1">这是事实</button>
+        <button class="j-btn" data-kind="0">这是假设</button>
+      </div>
+      <div class="j-fb">可查：打开大宗商品报价当场核对，随时可复核——这是事实，可以当地基。</div>
+    </div>
+    <div class="j-row" data-ok="0">
+      <p class="j-stmt">"火箭就该卖几千万一枚，因为一直以来都这个价。"</p>
+      <div class="j-opts">
+        <button class="j-btn" data-kind="1">这是事实</button>
+        <button class="j-btn" data-kind="0">这是假设</button>
+      </div>
+      <div class="j-fb">"一直如此"不是"理应如此"。它没被拆过，只是被重复过——这是假设，不能当地基。</div>
+    </div>
+    <div class="j-row" data-ok="0">
+      <p class="j-stmt">"这个系统的工期要三个月，按上次的经验。"</p>
+      <div class="j-opts">
+        <button class="j-btn" data-kind="1">这是事实</button>
+        <button class="j-btn" data-kind="0">这是假设</button>
+      </div>
+      <div class="j-fb">上次的代码量、团队、需求都不同。拿旧经验套新问题——这是假设，得拆成"任务数×人效"重新估。</div>
+    </div>
+    <div class="j-row" data-ok="1">
+      <p class="j-stmt">"这个零件的材质是 6061 铝合金，规格书写着。"</p>
+      <div class="j-opts">
+        <button class="j-btn" data-kind="1">这是事实</button>
+        <button class="j-btn" data-kind="0">这是假设</button>
+      </div>
+      <div class="j-fb">可查：规格书、化验报告都能当场核对——这是事实，是真正的基本块。</div>
+    </div>
+    <div class="j-row" data-ok="0">
+      <p class="j-stmt">"我们的用户肯定愿意为这个高级功能付费。"</p>
+      <div class="j-opts">
+        <button class="j-btn" data-kind="1">这是事实</button>
+        <button class="j-btn" data-kind="0">这是假设</button>
+      </div>
+      <div class="j-fb">没人验证过付费意愿。它只是猜测——这是假设，最小成本问 10 个用户之前，别拿它当地基。</div>
+    </div>
+  </div>
+  <div class="j-progress" id="jProgress"></div>
+
+  <div class="callout teal"><p><b>用法：</b>动手拆之前，先把草稿纸上的每条判断标 F（事实）或 A（假设）。混着用，后面全是返工。</p></div>
+</section>
+
+<!-- ===== 视图：04 日常怎么拆 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">日常怎么用：租房与定方案</h2>
+    <span class="sec-sub">同一套拆法，搬回生活里</span>
+  </div>
+  <p class="lead">第一性原理不专属于航天。任何"贵得理所当然"的事，都值得拆一遍。以租房和定技术方案为例，四步走。</p>
+
+  <div class="steps" id="dlySteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">先写清你到底要什么<small>目标一句话，别被选项带跑</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>不是"租个好房子"，而是"每月住+通勤的总开销最低，且能睡得好"。目标不同，拆出来的基本要素完全不同。</p>
+        <div class="eg"><b>例：</b>定技术方案时，目标不是"用上微服务"，而是"当前流量下稳定交付、运维不累"。目标定错，后面全白拆。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">拆到基本要素<small>拆到可查、可数为止</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>房租 = 每平米单价 × 面积 × 月数；通勤 = 单程时间 × 2 × 22 天，再乘你的时薪；"舒适度"拆成：真实会用到的面积、采光、噪音。</p>
+        <div class="eg"><b>例：</b>技术方案拆成：当前日活峰值、团队人数、故障一次的代价、招聘难度——而不是"业界都用什么"。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">给每条标事实或假设<small>地基只留可核对的</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>"这地段就是这个价"——报价可查，是事实；"我肯定用得上 100 平"——多半是假设（你真正天天待的只有卧室和工位那几平米）。</p>
+        <div class="eg"><b>例：</b>"三个月工期"基于上次经验是假设；"这个接口有 200 个调用方"查监控可得，是事实。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">从要素重新组合新方案<small>不是改旧方案，是从地基重盖</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>拆完重算：远一点但每平米单价低、通勤时间折成钱后总账更便宜的房，往往比"地段好但贵"的那套更优。</p>
+        <div class="eg"><b>例：</b>流量没到那个量级，先上单体、把故障代价留足——不是在别人的微服务蓝图上打补丁，是从自己的要素重新推。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><span class="mnem">口诀</span>别在别人的楼里补窟窿。<b>拆到不能再拆，从地基重新算。</b></p></div>
+</section>
+
+<!-- ===== 视图：05 自测 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 第一性原理指的是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">照搬最成功的同行经验</button>
+        <button class="q-opt" data-ok="1">拆到不可再拆的基本事实，从地基重新建方案</button>
+        <button class="q-opt" data-ok="0">做决策前先算概率</button>
+      </div>
+      <div class="q-feedback">它的对立面不是经验，是"不问为什么就接受经验"。从可核对的基本事实往上推。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 类比思维最大的风险是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">速度太慢，耽误事</button>
+        <button class="q-opt" data-ok="1">把"一直如此"当成"理应如此"，在旧方案上越补越贵</button>
+        <button class="q-opt" data-ok="0">不尊重专家和行业惯例</button>
+      </div>
+      <div class="q-feedback">地基是别人定的，你只加层不拆楼——越叠越歪。小事没事，大事要命。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. "火箭原材料只占售价零头"这个案例说明？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">航天行业特别暴利</button>
+        <button class="q-opt" data-ok="1">行业报价高不代表真实成本高，从基本事实重算能看到另一个价格</button>
+        <button class="q-opt" data-ok="0">火箭材料很便宜</button>
+      </div>
+      <div class="q-feedback">报价是历史堆出来的，成本是材料算出来的。两种账，差着数量级。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 下面哪句是"假设"而不是"事实"？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">"我们的用户肯定愿意为高级功能付费"</button>
+        <button class="q-opt" data-ok="0">"这批铝的市场报价是每吨 2 万（示意）"</button>
+        <button class="q-opt" data-ok="0">"这个零件材质是 6061 铝合金（规格书可查）"</button>
+      </div>
+      <div class="q-feedback">付费意愿没人验证过。可查价、可查规格、可查数据的才是事实。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 什么时候不该用第一性原理？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">重要、昂贵、反复踩坑的决策</button>
+        <button class="q-opt" data-ok="1">买瓶水这种小事，拆一遍比直接买还贵</button>
+        <button class="q-opt" data-ok="0">成本长期降不下来的项目</button>
+      </div>
+      <div class="q-feedback">拆法有成本。事越大、越贵、越反复踩坑，才值得拆；小事上类比就是最优解。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：06 作业与复盘 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">作业：拆一件你正在纠结的事</h2>
+    <span class="sec-sub">真拆一次，比读十遍有用</span>
+  </div>
+  <p class="lead">挑一件最近让你觉得"贵 / 难 / 理所当然"的事（一笔开销、一个技术选型、一个流程）。按四步拆完，填下面的复盘。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>要拆的事</th><td>一句话，你到底要解决什么？</td></tr>
+    <tr><th>基本要素</th><td>拆到可查、可数的是哪几项？</td></tr>
+    <tr><th>事实 F</th><td>哪些是当场能核对的？</td></tr>
+    <tr><th>假设 A</th><td>哪些只是"一直如此 / 应该是"？</td></tr>
+    <tr><th>重算后的新方案</th><td>从地基重新盖，答案变了吗？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题逐行填在这里，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 2 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：系统思考——看见回路和延迟。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列：ready → play → done ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 卡片折叠 ===== */
+  document.querySelectorAll('#wayCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02 成本拆解计算器 ===== */
+  var rows = [["u0","q0","sub0"],["u1","q1","sub1"],["u2","q2","sub2"],["u3","q3","sub3"]];
+  var cTotal = document.getElementById('cTotal');
+  function num(id){ var v = parseFloat(document.getElementById(id).value); if (isNaN(v) || v < 0) v = 0; return v; }
+  function computeCost(){
+    var total = 0;
+    rows.forEach(function(r){
+      var v = num(r[0]) * num(r[1]);
+      total += v;
+      document.getElementById(r[2]).textContent = v.toFixed(1);
+    });
+    cTotal.innerHTML = total.toFixed(1) + '<small>万元 · 示意</small>';
+  }
+  document.querySelectorAll('#costLab input').forEach(function(inp){
+    inp.addEventListener('input', computeCost);
+  });
+  computeCost();
+
+  /* ===== 03 事实 vs 假设 判定 ===== */
+  var jDone = 0, jRight = 0;
+  var jProgress = document.getElementById('jProgress');
+  document.querySelectorAll('#judge .j-row').forEach(function(row){
+    var ok = row.getAttribute('data-ok') === '1';
+    var btns = row.querySelectorAll('.j-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (row.classList.contains('done')) return;
+        row.classList.add('done');
+        var kind = btn.getAttribute('data-kind') === '1';
+        var right = (kind === ok);
+        row.classList.add(right ? 'right' : 'wrong');
+        if (!right) {
+          btns.forEach(function(b){
+            var bk = b.getAttribute('data-kind') === '1';
+            if (bk === ok) b.classList.add(ok ? 'sel-f' : 'sel-a');
+          });
+        } else {
+          btn.classList.add(ok ? 'sel-f' : 'sel-a');
+          jRight += 1;
+        }
+        jDone += 1;
+        jProgress.textContent = '已判断 ' + jDone + ' / 5 · 对 ' + jRight + ' 条';
+      });
+    });
+  });
+
+  /* ===== 04 步骤折叠 ===== */
+  document.querySelectorAll('#dlySteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#dlySteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 05 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去拆一件你正在纠结的事。' : ' —— 回去看 01、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 06 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【第一性原理复盘】'];
+    var keys = ['要拆的事','基本要素','事实 F','假设 A','重算后的新方案'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

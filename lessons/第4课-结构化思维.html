@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第4课 结构化思维：把混乱变成秩序</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M16 6l9 18H7z' fill='none' stroke='%23C08A2D' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='11' r='2.4' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 乱→序→金字塔 舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:230px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.dot{position:absolute;width:26px;height:26px;border-radius:50%;transform:translate(-50%,0);transition:left 1.15s cubic-bezier(.3,.7,.3,1),top 1.15s cubic-bezier(.3,.7,.3,1),box-shadow .6s ease,opacity .55s ease}
+.dot.gold{background:var(--gold);box-shadow:0 0 10px rgba(192,138,45,.5)}
+.dot.coral{background:rgba(201,79,56,.9)}
+.dot.teal{background:rgba(62,124,111,.9)}
+.dot.noise{background:rgba(251,248,241,.35);width:14px;height:14px}
+/* 散乱起点 */
+.s1{left:10%;top:26px}.s2{left:86%;top:14px}.s3{left:22%;top:164px}
+.s4{left:72%;top:172px}.s5{left:45%;top:52px}.s6{left:60%;top:182px}
+.s7{left:6%;top:96px}.s8{left:90%;top:104px}.s9{left:33%;top:78px}
+/* 聚合终点：金字塔三层 */
+.stage.play .s1{left:50%;top:18px}
+.stage.play .s2{left:43%;top:74px}
+.stage.play .s5{left:57%;top:74px}
+.stage.play .s3{left:38%;top:128px}
+.stage.play .s7{left:50%;top:128px}
+.stage.play .s4{left:62%;top:128px}
+.stage.done .s6,.stage.done .s8,.stage.done .s9{opacity:0}
+.stage.done .s1{box-shadow:0 0 22px rgba(192,138,45,.9)}
+.pyr-tag{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.4em;color:var(--gold);opacity:0;white-space:nowrap}
+.stage.done .pyr-tag{opacity:1;transition:opacity .5s ease .5s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.06rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;letter-spacing:.06em}
+.tag.y{background:rgba(192,138,45,.16);color:#8A641C}
+.tag.n{background:rgba(90,100,120,.14);color:var(--muted)}
+.tag.h{background:rgba(201,79,56,.14);color:var(--coral)}
+.tag.g{background:rgba(62,124,111,.15);color:var(--teal)}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+.formula{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip{font-size:.88rem;font-weight:600;padding:5px 12px;border-radius:20px;border:1.5px solid var(--gold);color:#8A641C;background:rgba(192,138,45,.1)}
+.chip.s{color:var(--teal);border-color:var(--teal);background:rgba(62,124,111,.1)}
+
+/* SCQA 对照切换 */
+.dlg-tabs{display:flex;gap:0;margin:22px 0 0;border-bottom:2px solid var(--ink)}
+.dlg-tab{flex:1;text-align:center;padding:12px;font-weight:700;font-size:.98rem;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--sans);border-radius:10px 10px 0 0}
+.dlg-tab.on{background:var(--ink);color:var(--white)}
+.dlg-pane{display:none;border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:20px 18px}
+.dlg-pane.on{display:block}
+.dlg-line{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.dlg-who{flex:none;width:74px;font-size:.82rem;font-weight:700;padding-top:3px}
+.dlg-who.me{color:var(--coral)}.dlg-who.other{color:var(--teal)}
+.dlg-say{flex:1;min-width:0}
+.dlg-say .txt{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.dlg-say .why{font-size:.8rem;color:var(--gold);margin-top:4px}
+.dlg-bad{background:#F6E6E0;border-left:3px solid var(--coral);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+.dlg-good{background:var(--teal-soft);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:200px}
+  .dlg-who{width:56px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .dot{transition:none}
+  .stage .s1{left:50%;top:18px}
+  .stage .s2{left:43%;top:74px}
+  .stage .s5{left:57%;top:74px}
+  .stage .s3{left:38%;top:128px}
+  .stage .s7{left:50%;top:128px}
+  .stage .s4{left:62%;top:128px}
+  .stage .s6,.stage .s8,.stage .s9{display:none}
+  .pyr-tag{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="dot gold s1"></div>
+    <div class="dot coral s2"></div>
+    <div class="dot teal s3"></div>
+    <div class="dot teal s4"></div>
+    <div class="dot coral s5"></div>
+    <div class="dot noise s6"></div>
+    <div class="dot teal s7"></div>
+    <div class="dot noise s8"></div>
+    <div class="dot noise s9"></div>
+    <div class="pyr-tag">乱 · 序 · 金 字 塔</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 第 4 课</div>
+    <h1>结构化思维<span class="accent">把混乱变成秩序</span></h1>
+    <div class="hero-sub">脑子里一堆事，嘴上说不清楚？这节课给你一套<br class="br">把乱麻理成金字塔的方法。</div>
+    <div class="hero-meta">结论先行 · 以上统下 · 归类分组 · 逻辑递进</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 为什么你说不清楚 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">为什么你说不清楚</h2>
+    <span class="sec-sub">不是嘴笨，是信息没排队</span>
+  </div>
+  <p class="lead">说不清的根源，往往不是表达能力，而是<b class="strong">脑子里的信息是一团乱麻</b>：点很多，但谁也不挨着谁。开口时只能想到哪说到哪，对方听着累，你也越说越没底。</p>
+  <p>结构化思维干的事只有一件：在开口之前，先把脑子里的信息<b>排好队、分好堆、码成塔</b>。嘴只是执行者，脑子码好了，嘴自然顺。</p>
+
+  <p class="kicker">练一练：点开看看这些"说不清"，病根是哪个</p>
+  <div class="cards" id="messCards">
+    <div class="card"><h4><span class="tag h">乱</span>想到哪说到哪</h4><p class="hint">点开看病根</p><div class="why">没有结论。对方听了三分钟，还不知道你要干嘛、想让他做什么。</div></div>
+    <div class="card"><h4><span class="tag h">乱</span>所有事一样重要</h4><p class="hint">点开看病根</p><div class="why">没有主次。关键信息被埋在细节堆里，领导抓了半天才抓到重点。</div></div>
+    <div class="card"><h4><span class="tag h">乱</span>分类全凭感觉</h4><p class="hint">点开看病根</p><div class="why">没有分组。同一件事在报告里出现了三次，另一件关键的事压根没提。</div></div>
+    <div class="card"><h4><span class="tag h">乱</span>越想越绕</h4><p class="hint">点开看病根</p><div class="why">没有顺序。讲完原因想起了补充，补充完又绕回开头，听众跟着你迷路。</div></div>
+  </div>
+  <div class="callout red"><p><b>结论：</b>说不清楚 ≠ 嘴笨。是信息在你脑子里没有"排队"。这节课就是给你一套排队方法。</p></div>
+</section>
+
+<!-- ===== 视图：02 金字塔四原则 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">金字塔四原则</h2>
+    <span class="sec-sub">结论先行 · 以上统下 · 归类分组 · 逻辑递进</span>
+  </div>
+  <p class="lead">结构化思维的成品是一座金字塔：<b class="strong">塔尖是结论，塔身是支撑结论的几组理由，塔基是具体的事实和数据</b>。四条原则管住这座塔。</p>
+
+  <div class="steps" id="pyramidSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">结论先行<small>开口先给答案，再补理由</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>先说结论，再说为什么。对方的大脑最想要的就是"你到底想说什么"——你把它藏在最后，等于逼对方边听边猜。</p>
+        <div class="eg"><b>例：</b>先说"建议延期一周上线"，再讲三条原因。而不是从"上周二我们开了个会"开始讲。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">以上统下<small>上一层是下一层的概括，下一层撑住上一层</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>塔尖那句话，下面每组理由都必须能"撑住"它。撑不住的内容，要么删掉，要么别往这层放。</p>
+        <div class="eg"><b>例：</b>结论是"延期一周最稳"，下面每组理由都得回答"为什么要延期"。突然冒出来的"顺便说个设计细节"，就是不统下的垃圾信息。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">归类分组<small>同一层按同一类归堆，一次记一组</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>十个杂点直接扔出去，谁都记不住。归成三组、每组起一个小标题，听众一次记一组——负担降了一大半。分组的规矩是 MECE，下一节细讲。</p>
+        <div class="eg"><b>例：</b>十条延期原因，归成"环境、人力、需求变动"三组，比平铺十条清楚十倍。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">逻辑递进<small>同组之内按顺序排：时间 / 结构 / 重要性</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>同一组的几条理由，排好顺序：按时间先后、按空间结构、或按重要性从大到小。顺序一乱，逻辑就断，听众开始自己脑补衔接。</p>
+        <div class="eg"><b>例：</b>讲排障按"先易后难、先外围后核心"排，而不是想到哪个讲哪个。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><span class="mnem">口诀</span>结论先行先开口，上面统着下面走；归类分组不重不漏，同组之内排好顺序。</p></div>
+</section>
+
+<!-- ===== 视图：03 MECE 与 SCQA ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">两个工具：MECE 与 SCQA</h2>
+    <span class="sec-sub">分组要不重不漏，开场要四步抓人</span>
+  </div>
+  <p class="lead">搭金字塔时有两个最好用的工具：<b class="strong">MECE 管分组，SCQA 管开场</b>。</p>
+  <p><b class="strong">MECE</b>（读作"麦西"）：相互独立，完全穷尽。翻成人话——<b>组和组之间不重叠，所有组合起来不遗漏</b>。重叠就是重复汇报，遗漏就是拍脑袋。</p>
+
+  <div class="cards" id="meceCards">
+    <div class="card"><h4><span class="tag h">重叠</span>两个组说的是同一件事</h4><p class="hint">点开看例子</p><div class="why">把"测试没做完"和"环境没就绪"分成两组——这俩其实是一回事的两种说法。领导听两遍等于信息为零，还觉得你思路不清。</div></div>
+    <div class="card"><h4><span class="tag h">遗漏</span>关键那一类压根没进塔</h4><p class="hint">点开看例子</p><div class="why">排障只查了应用日志，没查网络和依赖服务——分组看着整齐，关键那一类根本不在塔里。结论再漂亮也是漏的。</div></div>
+  </div>
+
+  <p class="kicker" style="margin-top:26px">对照看：同一件事——项目要延期，向老板汇报，两种说法切一下</p>
+  <div class="dlg-tabs">
+    <button class="dlg-tab on" id="tabBad">混乱版 · 说着说着就散了</button>
+    <button class="dlg-tab" id="tabGood">SCQA 版 · 四句说清</button>
+  </div>
+
+  <div class="dlg-pane on" id="paneBad">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"那个……昨天线上又出了个小问题，后来测试那边说用例跑不完，我最近一直在协调环境，还有客户那边一直在催交付……"</div><div class="why">开口没有结论，先讲流水账。老板前三句就开始猜：他到底想说啥？</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"……对了上周那个接口联调也卡住了，我在想要不我们再看看排期，反正现在这样下去也不行，您觉得呢？"</div><div class="why">细节堆成一团，"您觉得呢"把决策甩了回去——老板还要帮你理信息。</div></div></div>
+    <div class="dlg-bad">结果：老板听完只记得"出了一堆事"，结论、请求、下一步全没有。你还花了两分钟。</div>
+  </div>
+
+  <div class="dlg-pane" id="paneGood">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt"><b>S 情境：</b>"项目按计划，月底联调。"</div><div class="why">先共识：说一个对方肯定点头的背景，建立共同起点。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt"><b>C 冲突：</b>"但关键接口联调被阻塞，测试环境这周还没就绪。"</div><div class="why">再转折：变化出现了，原来的计划保不住了——对方开始关心。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt"><b>Q 问题：</b>"原计划还守不守得住？"</div><div class="why">把冲突变成一个明确问题，替对方把心里的疑问说出来。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt"><b>A 答案：</b>"我的建议是延期一周上线。我已经列好了这一周补回进度的三件事。"</div><div class="why">最后给答案：结论先行落在这里，而且带着方案，不是抛问题。</div></div></div>
+    <div class="dlg-good">结果：四句话、一分钟以内。老板知道了结论、理由和你的请求，只需要拍板。</div>
+  </div>
+
+  <div class="callout"><p><b>差异说明：</b>混乱版是"想到哪讲到哪"，SCQA 版是"先共识背景 → 再打破它 → 替对方提出疑问 → 最后给答案"。四步走完，对方的脑子已经被你铺好路，答案自然落进去。</p></div>
+</section>
+
+<!-- ===== 视图：04 三个实战 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">三个实战场景</h2>
+    <span class="sec-sub">汇报倒着讲 · 方案正着拆 · 排障沿着剪</span>
+  </div>
+
+  <div class="steps" id="caseSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">电梯汇报<small>30 秒，在电梯里说清一件事</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>只有 30 秒时，别按时间顺序讲过程。按金字塔<b>倒着讲</b>：先结论，再三条理由，最后一句你要对方做什么。</p>
+        <div class="eg"><b>例（示意）：</b>电梯里遇到老板，30 秒版——"建议项目延期一周上线（结论）。原因三条：环境未就绪、联调阻塞、用例积压（分组）。需要您批一周缓冲（请求）。"说完正好到站。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">方案拆解<small>把一个大方案，铺成可执行的层级</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>拿到一个大目标，先写塔尖一句话，再往下拆三层：<b>目标 → 三个支撑方向 → 每个方向的具体动作</b>。拆完用 MECE 自查：三组之间有没有重叠？合起来够不够覆盖目标？</p>
+        <div class="eg"><b>例（示意）：</b>塔尖"提升注册转化率" → 三个方向：落地页、注册流程、新客激励 → 每个方向下面挂具体动作清单。上一层是概括，下一层撑得住。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">议题树排障<small>逐层定位线上问题 / 业务问题</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>出了问题别一上来就猜。从顶层问题往下拆：<b>问题是什么？可能的大类有哪些？每一类怎么快速验证？</b>排除掉一类，就少一个方向，直到卡住某一类再往下钻。</p>
+        <div class="eg"><b>例（示意）：</b>顶层"接口变慢" → 拆成四类：客户端、网络、服务端、数据库 → 先看监控排除最不可能的两类 → 剩下"服务端"再往下拆成具体接口、线程池、慢查询。议题树逼你按顺序验证，而不是东一榔头西一棒槌。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b>三个场景，同一座金字塔：</b>汇报是<b>倒着</b>讲（从上往下），方案是<b>正着</b>拆（从尖到基），排障是沿着树<b>逐层剪</b>（排除法）。</p></div>
+</section>
+
+<!-- ===== 视图：05 自测 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 金字塔四原则是哪四个？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">结论先行、以上统下、归类分组、逻辑递进</button>
+        <button class="q-opt" data-ok="0">先讲细节、越多越好、随便分组、想到哪讲到哪</button>
+        <button class="q-opt" data-ok="0">数据为先、图表为主、结论最后、越长越好</button>
+      </div>
+      <div class="q-feedback">塔尖结论先行，以上统下管住层级，归类分组管住同层，逻辑递进管住顺序。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. MECE 说的是什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">组与组之间不重叠，合起来不遗漏</button>
+        <button class="q-opt" data-ok="0">每组内容越多越好</button>
+        <button class="q-opt" data-ok="0">分类靠感觉就行</button>
+      </div>
+      <div class="q-feedback">相互独立（不重叠）、完全穷尽（不遗漏）。重叠是重复汇报，遗漏是拍脑袋。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. SCQA 里的 C 指的是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">结论（Conclusion）</button>
+        <button class="q-opt" data-ok="1">冲突（Complication）：打破平稳背景的那个变化</button>
+        <button class="q-opt" data-ok="0">客户（Customer）</button>
+      </div>
+      <div class="q-feedback">S 情境 → C 冲突 → Q 问题 → A 答案。冲突就是那个"原来的计划保不住了"的转折。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 电梯里只有 30 秒，汇报第一句应该说什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">从事情的来龙去脉开始讲</button>
+        <button class="q-opt" data-ok="1">直接抛结论："建议延期一周上线"</button>
+        <button class="q-opt" data-ok="0">先问老板最近忙不忙</button>
+      </div>
+      <div class="q-feedback">时间越短，越要结论先行。先给答案，再补三条理由和一个请求。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 用议题树排障，正确打法是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">从顶层问题逐层拆分类，逐层验证、逐层排除</button>
+        <button class="q-opt" data-ok="0">挑最怀疑的那个方向直接死磕</button>
+        <button class="q-opt" data-ok="0">把所有日志全翻一遍再说</button>
+      </div>
+      <div class="q-feedback">先分类、再验证、排除掉不对的方向，最后卡在某一类再往下钻——这就是议题树。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：06 作业与复盘 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">作业：把一件真事摆成金字塔</h2>
+    <span class="sec-sub">这周挑一件要汇报的事，摆一遍</span>
+  </div>
+  <p class="lead">别找太复杂的。一个周报、一个需求评审、一次跟老板的五分钟同步，都可以。按下面的问题填，然后把电梯 30 秒稿对着镜子说一遍。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>塔尖结论</th><td>一句话：我建议 / 请求什么？</td></tr>
+    <tr><th>三组理由</th><td>支撑结论的三个方向，各一句话</td></tr>
+    <tr><th>MECE 自查</th><td>三组有重叠吗？合起来覆盖结论了吗？</td></tr>
+    <tr><th>SCQA 开场</th><td>情境 / 冲突 / 问题 / 答案，各一句</td></tr>
+    <tr><th>电梯 30 秒稿</th><td>结论先行版说一遍，掐表计时</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题填在这里，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 4 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：第4课进阶（上）·结构化表达实战。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列：乱 → 序 → 金字塔 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 混乱卡点卡 ===== */
+  document.querySelectorAll('#messCards .card, #meceCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02/04 折叠步骤 ===== */
+  ['#pyramidSteps','#caseSteps'].forEach(function(sel){
+    document.querySelectorAll(sel + ' .step-head').forEach(function(head){
+      head.addEventListener('click', function(){
+        var step = head.parentNode;
+        var open = step.classList.contains('open');
+        document.querySelectorAll(sel + ' .step').forEach(function(x){ x.classList.remove('open'); });
+        if (!open) step.classList.add('open');
+      });
+    });
+  });
+
+  /* ===== 03 SCQA 对照切换 ===== */
+  var tabBad = document.getElementById('tabBad'), tabGood = document.getElementById('tabGood');
+  var paneBad = document.getElementById('paneBad'), paneGood = document.getElementById('paneGood');
+  function showPane(good){
+    tabBad.classList.toggle('on', !good);
+    tabGood.classList.toggle('on', good);
+    paneBad.classList.toggle('on', !good);
+    paneGood.classList.toggle('on', good);
+  }
+  tabBad.addEventListener('click', function(){ showPane(false); });
+  tabGood.addEventListener('click', function(){ showPane(true); });
+
+  /* ===== 05 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。拿一件真事摆一遍金字塔。' : ' —— 回去看 02、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 06 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【结构化思维复盘】'];
+    var keys = ['塔尖结论','三组理由','MECE 自查','SCQA 开场','电梯 30 秒稿'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

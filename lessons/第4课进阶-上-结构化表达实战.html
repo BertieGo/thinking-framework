@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第4课进阶（上）结构化表达实战</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Crect x='6' y='9' width='20' height='15' rx='2' fill='none' stroke='%23C08A2D' stroke-width='2'/%3E%3Cpath d='M6 11l10 7 10-7' fill='none' stroke='%23C94F38' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* PREP 四层舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:230px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.prep-line{position:absolute;top:56px;left:12%;right:13%;height:2px;background:rgba(192,138,45,.3);opacity:0}
+.stage.play .prep-line{opacity:1;transition:opacity .5s ease .2s}
+.pn{position:absolute;top:30px;width:52px;margin-left:-26px}
+.pn1{left:12%}.pn2{left:37%}.pn3{left:62%}.pn4{left:87%}
+.pn-dot{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;font-size:20px;color:#FBF8F1;opacity:0;transform:translateY(-16px) scale(.5)}
+.pn1 .pn-dot{background:rgba(192,138,45,.92);box-shadow:0 0 12px rgba(192,138,45,.55)}
+.pn2 .pn-dot{background:rgba(201,79,56,.88)}
+.pn3 .pn-dot{background:rgba(62,124,111,.92)}
+.pn4 .pn-dot{background:rgba(192,138,45,.92);box-shadow:0 0 12px rgba(192,138,45,.55)}
+.stage.play .pn-dot{animation:nodeIn .55s ease-out forwards}
+.stage.play .pn1 .pn-dot{animation-delay:.1s}
+.stage.play .pn2 .pn-dot{animation-delay:.45s}
+.stage.play .pn3 .pn-dot{animation-delay:.8s}
+.stage.play .pn4 .pn-dot{animation-delay:1.15s}
+@keyframes nodeIn{0%{opacity:0;transform:translateY(-16px) scale(.5)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
+.pn-cap{position:absolute;top:106px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(251,248,241,.75);white-space:nowrap;letter-spacing:.12em}
+.stage.done .pn2,.stage.done .pn3{opacity:.3;transition:opacity .45s ease}
+.stage.done .pn4 .pn-dot{box-shadow:0 0 26px rgba(192,138,45,.95);transition:box-shadow .55s ease .15s}
+.loop-svg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:78px;opacity:0}
+.stage.done .loop-svg{opacity:1;transition:opacity .3s ease}
+.loop-path{stroke-dasharray:340;stroke-dashoffset:340}
+.stage.done .loop-path{animation:drawLoop .8s ease .1s forwards}
+@keyframes drawLoop{to{stroke-dashoffset:0}}
+.loop-tag{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.35em;color:var(--gold);opacity:0;white-space:nowrap}
+.stage.done .loop-tag{opacity:1;transition:opacity .5s ease .7s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+.formula{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip{font-size:.88rem;font-weight:600;padding:5px 12px;border-radius:20px;border:1.5px solid var(--gold);color:#8A641C;background:rgba(192,138,45,.1)}
+.chip.s{color:var(--teal);border-color:var(--teal);background:rgba(62,124,111,.1)}
+
+/* PREP 邮件生成器（深色 lab） */
+.lab{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.lab h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.lab .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch}
+.lab-form{display:grid;grid-template-columns:1fr;gap:12px;margin:18px 0 6px}
+.lab-form label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;color:rgba(251,248,241,.82)}
+.lab-form label b{color:var(--gold);font-weight:700}
+.lab-form input{background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);color:var(--white);border-radius:8px;padding:9px 10px;font-family:var(--sans);font-size:1rem;min-width:0}
+.lab-form input:focus{outline:none;border-color:var(--gold)}
+.m-btn{background:transparent;border:1.5px solid rgba(192,138,45,.7);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:.9rem;padding:10px 18px;border-radius:9px;cursor:pointer;transition:background .15s;min-height:44px}
+.m-btn:hover{background:rgba(192,138,45,.15)}
+.m-btn.plain{border-color:rgba(251,248,241,.35);color:rgba(251,248,241,.85)}
+.m-btn.plain:hover{background:rgba(251,248,241,.1)}
+.m-btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.lab-out{background:var(--paper);color:var(--text);border-radius:10px;padding:16px 18px;font-size:.93rem;margin-top:16px;min-height:150px;white-space:pre-wrap;line-height:1.75;display:none}
+.lab-out.show{display:block}
+.lab-out .mk{font-weight:700}
+.lab-out .mk.p{color:var(--coral)}
+.lab-out .mk.r{color:#8A641C}
+.lab-out .mk.e{color:var(--teal)}
+
+/* 三版本汇报 tabs */
+.dlg-tabs{display:flex;gap:0;margin:22px 0 0;border-bottom:2px solid var(--ink)}
+.dlg-tab{flex:1;text-align:center;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--sans);border-radius:10px 10px 0 0;min-height:44px}
+.dlg-tab.on{background:var(--ink);color:var(--white)}
+.dlg-pane{display:none;border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:20px 18px}
+.dlg-pane.on{display:block}
+.dlg-pane .say{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.95rem;margin:10px 0}
+.dlg-pane .how{font-size:.85rem;color:var(--gold);margin-top:6px}
+
+/* 对照表 */
+.cmp-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.cmp-table th,.cmp-table td{border:1px solid var(--line);padding:10px 12px;font-size:.92rem;text-align:left;vertical-align:top}
+.cmp-table th{background:var(--paper-2);font-weight:700}
+.cmp-table td{background:var(--white)}
+.cmp-table td .no{color:var(--coral)}
+.cmp-table td .yes{color:var(--teal);font-weight:600}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s;min-height:44px}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s;min-height:44px}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:200px}
+  .pn{width:40px;margin-left:-20px}
+  .pn-dot{width:40px;height:40px;font-size:15px}
+  .pn-cap{top:92px;font-size:11px}
+  .lab{padding:22px 16px}
+  .dlg-tab{font-size:.86rem;padding:10px 6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .pn-dot{opacity:1;transform:none}
+  .prep-line{opacity:1}
+  .loop-svg{opacity:1}
+  .loop-path{stroke-dashoffset:0}
+  .loop-tag{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.btn,.m-btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="prep-line"></div>
+    <div class="pn pn1"><div class="pn-dot">P</div><div class="pn-cap">观点</div></div>
+    <div class="pn pn2"><div class="pn-dot">R</div><div class="pn-cap">理由</div></div>
+    <div class="pn pn3"><div class="pn-dot">E</div><div class="pn-cap">例子</div></div>
+    <div class="pn pn4"><div class="pn-dot">P</div><div class="pn-cap">重申</div></div>
+    <svg class="loop-svg" viewBox="0 0 400 78" fill="none" preserveAspectRatio="none">
+      <path class="loop-path" d="M352 8 C 352 66, 48 66, 48 10" stroke="#C08A2D" stroke-width="2" stroke-dasharray="6 0"/>
+      <polygon points="48,2 42,12 54,12" fill="#C08A2D"/>
+    </svg>
+    <div class="loop-tag">收 回 同 一 个 观 点</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 第 4 课 进 阶（上）</div>
+    <h1>结构化表达<span class="accent">怎么说</span></h1>
+    <div class="hero-sub">心里想得明白，嘴上说不出来？这节课给你一套<br class="br">开口就有条理、写邮件就抓人的表达框架。</div>
+    <div class="hero-meta">PREP × 标题公式 × 三版本汇报 × 过桥法</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 为什么别人听不进去 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">为什么别人听不进去</h2>
+    <span class="sec-sub">不是你没想法，是顺序错了</span>
+  </div>
+  <p class="lead">很多人表达的毛病不是"肚子里没货"，而是<b class="strong">把最重要的东西埋在了最后</b>。对方的注意力只有头三十秒，你却先铺了五分钟背景。点开看看，你中过哪几条。</p>
+
+  <div class="cards" id="badCards">
+    <div class="card"><h4>① 结论埋在最后</h4><div class="why">从背景讲起，铺垫了半天，"所以……"才出来。听的人早就开始看手机了。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>把结论搬到第一句。对方抓住结论，后面的理由才有人听。</div></div>
+    <div class="card"><h4>② 流水账</h4><div class="why">"先是……然后……后来……最后……"按时间顺序从头讲，听的人得自己帮你总结，太累。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>按重要性排，不按时间排。先说最重要的那个判断，过程只说被追问到的部分。</div></div>
+    <div class="card"><h4>③ 堆术语撑场面</h4><div class="why">觉得专业词越多越厉害，结果对方听不懂，干脆放弃听。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>术语后面立刻跟一句大白话翻译。说人话不是降水平，是让人跟得上。</div></div>
+    <div class="card"><h4>④ 讲完没有落点</h4><div class="why">说了十分钟，对方不知道你想要什么：要拍板？要资源？还是只是同步？</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>结尾明确给一个动作："请你周四前拍板""想请你支持两个人力"。</div></div>
+  </div>
+
+  <div class="callout red"><p><b>记住：</b>表达不是把你知道的倒出来，是<b>让对方在三十秒内抓住你的结论</b>。倒得再全，人没抓住，等于白说。</p></div>
+</section>
+
+<!-- ===== 视图：02 PREP 结构 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">PREP：先说结论，再说理由</h2>
+    <span class="sec-sub">观点 → 理由 → 例子 → 重申观点</span>
+  </div>
+  <p class="lead">PREP 是结构化表达里最常用的一副骨架：<b class="strong">P 观点、R 理由、E 例子、P 重申观点</b>。开头和结尾是同一个结论，中间用理由和例子把它撑住。</p>
+
+  <div class="steps" id="prepSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">P</span><span class="step-title">Point 观点：第一句就抛结论<small>别铺垫，别"我先简单说下背景"</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>开口第一句就是你的判断和请求。对方三十秒内知道"你要干嘛"，后面才听得进去。</p>
+        <div class="eg"><b>例：</b>"建议这次联调提前两天。"——而不是"我先跟你说下联调这个事……"</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">R</span><span class="step-title">Reason 理由：两到三条，别多<small>多了等于没有重点</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>理由控制在两到三条，每条一句话能说清。理由是为结论服务的，不是凑数的。</p>
+        <div class="eg"><b>例：</b>"一是测试环境周三就空出来了；二是提前联调，改 bug 的时间能多留一倍。"</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">E</span><span class="step-title">Example 例子：一个就够<small>用具体事把理由砸实</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>理由是抽象的，例子是具体的。一个真事顶十条道理。没有真例子，宁可少说一句。</p>
+        <div class="eg"><b>例：</b>"上个季度我们提前一周联调，上线当天没出严重问题（示意）。"</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">P</span><span class="step-title">Point 重申：回到结论<small>顺便给一个明确的动作</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>结尾把开头的结论再说一遍，并落成一个对方能执行的动作。首尾呼应，对方想忘都难。</p>
+        <div class="eg"><b>例：</b>"所以我的建议是联调提前两天，请你周四前拍板。"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>为什么首尾都是 P：</b>人听东西，最记得开头和结尾。开头抓他，结尾锤他，中间的 R 和 E 才站得住。</p></div>
+</section>
+
+<!-- ===== 视图：03 邮件标题公式 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">邮件标题：结论先行的第一站</h2>
+    <span class="sec-sub">标题就是第一行 PREP</span>
+  </div>
+  <p class="lead">邮件标题决定对方读不读、什么时候读。烂标题浪费整封邮件，好标题<b class="strong">没点开就把结论递过去了</b>。</p>
+  <div class="formula">
+    <span class="chip">公式一：动作 + 对象 + 时间</span>
+    <span class="chip s">公式二：结果导向 · 直接写结论</span>
+  </div>
+  <p>避开两种常见病：一种是"关于 XX 的讨论"这种什么都没说的标题；一种是全靠"紧急"两个字催命。</p>
+
+  <div class="cards" id="titleCards">
+    <div class="card"><h4>"关于联调的安排"</h4><div class="why">等于没说。联调怎么了？要我干嘛？对方只能点开才知道，拖到明天。</div><p class="hint">点开看好标题</p><div class="fix"><b>改成：</b>"请拍板：联调提前两天（周四前回复）"——动作、对象、时间全在标题里。</div></div>
+    <div class="card"><h4>"进度同步"</h4><div class="why">同步了什么？好消息坏消息？对方无法判断优先级。</div><p class="hint">点开看好标题</p><div class="fix"><b>改成：</b>"某模块预计延期一周，申请顺联调节点"——结论直接写进标题。</div></div>
+    <div class="card"><h4>"紧急！！！"</h4><div class="why">感叹号不解决问题，只透支信任。喊多了，真紧急也没人理。</div><p class="hint">点开看好标题</p><div class="fix"><b>改成：</b>"周三前需确认测试环境，否则上线顺延"——把紧急换成具体后果和期限。</div></div>
+    <div class="card"><h4>"那个事……"</h4><div class="why">不写对象，对方得回忆半天是哪个事，邮件直接被压后。</div><p class="hint">点开看好标题</p><div class="fix"><b>改成：</b>"下周二评审：新版报表方案请提前过目"——时间、事项、请求一次给齐。</div></div>
+  </div>
+
+  <div class="callout teal"><p><b>自检：</b>把标题遮住正文，只看标题——对方能不能知道<b>你要他做什么、什么时候之前</b>？能，就是合格标题。</p></div>
+</section>
+
+<!-- ===== 视图：04 PREP 邮件生成器 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">动手练：PREP 邮件生成器</h2>
+    <span class="sec-sub">填四项，拼一封结构化邮件</span>
+  </div>
+  <p class="lead">把你正在写的那封邮件按下面四项填进去（已预填一个示例），点「生成邮件」，它会按 P→R→E→P 给你拼好一封可以直接发的草稿，再一键复制。</p>
+
+  <div class="lab" id="prepLab">
+    <h3>填四项，生成一封 PREP 邮件</h3>
+    <p class="desc">观点要一句话能拍板；理由两三条为宜；例子给一个真事。数字类信息请自行核实，本工具仅做结构拼接。</p>
+    <div class="lab-form">
+      <label><b>P · 观点</b>（一句话结论 / 请求）<input type="text" id="fP" value="建议把这次联调提前两天" aria-label="观点结论"></label>
+      <label><b>R · 理由一</b><input type="text" id="fR1" value="测试环境周三就空出来了，晚用也是浪费" aria-label="理由一"></label>
+      <label><b>R · 理由二</b><input type="text" id="fR2" value="提前联调，改 bug 的时间能多留一倍" aria-label="理由二"></label>
+      <label><b>E · 例子</b><input type="text" id="fE" value="上个季度提前一周联调，上线当天没出严重问题（示意）" aria-label="例子"></label>
+    </div>
+    <div class="m-btn-row">
+      <button class="m-btn" id="btnGenMail">生成邮件</button>
+      <button class="m-btn plain" id="btnCopyMail">复制草稿</button>
+    </div>
+    <div class="lab-out" id="mailOut" aria-live="polite"></div>
+  </div>
+
+  <div class="callout"><p><b>用法：</b>生成只是骨架。发出前自己读一遍——结论够不够狠？理由真站得住吗？例子是真的吗？骨架对了，措辞再按对方风格微调。</p></div>
+</section>
+
+<!-- ===== 视图：05 汇报三版本 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">汇报三版本：同一件事，三种讲法</h2>
+    <span class="sec-sub">30 秒 / 3 分钟 / 15 分钟</span>
+  </div>
+  <p class="lead">同一个项目进展，碰到领导的场合不同，讲法完全不同。<b class="strong">不是内容变了，是颗粒度变了</b>。切上去对比感受一下。</p>
+
+  <div class="dlg-tabs">
+    <button class="dlg-tab on" id="tab30">30 秒 · 电梯版</button>
+    <button class="dlg-tab" id="tab3">3 分钟 · 站会版</button>
+    <button class="dlg-tab" id="tab15">15 分钟 · 专项会版</button>
+  </div>
+
+  <div class="dlg-pane on" id="pane30">
+    <div class="say">"某模块要延期一周，我想申请把联调往后顺。原因主要是上游接口晚了三天，我们缺两个测试环境。我的打算是先保主流程，次要功能砍掉。需要您拍个板：联调能不能顺一周？"</div>
+    <div class="how">要点：结论 + 一个关键原因 + 一个明确请求。三十秒里，请求比原因重要。</div>
+  </div>
+  <div class="dlg-pane" id="pane3">
+    <div class="say">"先说结论：某模块预计延期一周，风险可控，我已经排了应对。为什么延期：上游接口晚了三天；我们缺两个测试环境，并行不起来。举个例子：上一次类似延期，我们砍了次要功能，最后只拖了两天。接下来我周三前给新排期，主流程本周自测完。需要协调：帮我们催一下测试环境。"</div>
+    <div class="how">要点：PREP 完整走一遍，结尾明确说出要什么支持。</div>
+  </div>
+  <div class="dlg-pane" id="pane15">
+    <div class="say">"背景：这个模块要接上下游两块，原计划本月底完成。现状：实际进度到七成，卡点是上游接口晚了三天、测试环境缺两个。风险：延期一周对整体节点的影响是可控的，最坏情况是压一周缓冲。方案：A 保主流程、砍次要功能；B 加人并行。我倾向 A。计划：周三出新排期，周五对齐，下周进联调。最后想听听各位对砍功能范围的意见。"</div>
+    <div class="how">要点：背景—现状—风险—方案—计划—讨论，给足对方决策材料，最后留讨论口子。</div>
+  </div>
+
+  <div class="callout teal"><p><b>关键认知：</b>先准备 15 分钟版，再往下砍——砍到 3 分钟，再砍到 30 秒。<b>从长往短砍容易，从短往长凑难</b>。平时就把一件事的三个版本备好。</p></div>
+</section>
+
+<!-- ===== 视图：06 临场两招 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">临场两招：被问倒、开口难</h2>
+    <span class="sec-sub">过桥法 + 我讲三点</span>
+  </div>
+
+  <div class="steps" id="onSpot">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">过桥法：被问倒时怎么接<small>别愣着，也别硬猜</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>会上被问一个答不上来的问题，最怕两种反应：愣住僵住，或者凭感觉瞎答。过桥法三句话，把这一关接过去：</p>
+        <div class="formula"><span class="chip">复述确认</span><span class="chip">坦诚过渡</span><span class="chip">承诺闭环</span></div>
+        <p><b>复述：</b>"您是问这个模块的成本明细，对吧？"（确认没听错，也争取了两秒）<br><b>过渡：</b>"这个数我手头没有准数，不敢随口说。"（不装，就是专业）<br><b>闭环：</b>"我今天下午三点前核实完，单独发您。"</p>
+        <div class="eg"><b>例：</b>被问"这块到底多少钱？"——别猜："明细我确认一下，下午三点前给您准数。"既没丢分，也没乱说。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">我讲三点：先报数量再展开<small>逼自己结构化</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>开口第一句先报数：<b>"这件事，我讲三点。"</b>然后第一、第二、第三讲完就停。好处是双向的：你自己被逼着把杂事归成三类，不会越讲越散；对方也有预期，听着不累。</p>
+        <div class="eg"><b>例：</b>领导问"这个需求你怎么看？"——"我讲三点：值不值得做、排期怎么排、风险在哪。"比想到哪说到哪强得多。</div>
+        <div class="eg"><b>注意：</b>说三点就真讲三点，讲完别补"还有啊……"。报了数又没收尾，反而显得乱。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：07 口语 vs 书面 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">口语和书面，不是一回事</h2>
+    <span class="sec-sub">换个场合，换套说法</span>
+  </div>
+  <p class="lead">写邮件那套，原样搬到会上讲，对方会累；会上讲那套，原样写进邮件，对方会觉得糙。<b class="strong">口语更短句、更强调、更少术语</b>。对照一下：</p>
+
+  <table class="cmp-table">
+    <colgroup><col style="width:20%"><col style="width:40%"><col style="width:40%"></colgroup>
+    <tr><th>场合</th><th>书面（邮件 / 文档）</th><th>口语（开会 / 汇报）</th></tr>
+    <tr><td>开头</td><td>可以先交代背景，再给结论</td><td><span class="yes">第一句就给结论</span>，背景被问再补</td></tr>
+    <tr><td>句子</td><td>长句、从句都能读，能回读</td><td><span class="yes">一句一个意思</span>，说完再开下一句</td></tr>
+    <tr><td>术语</td><td>可用专业词，读者可查</td><td>术语后面<span class="yes">立刻跟一句大白话</span></td></tr>
+    <tr><td>重点</td><td>靠加粗、分段标出</td><td>靠<span class="yes">重复和停顿</span>："这点很关键——"</td></tr>
+    <tr><td>结尾</td><td>论证完自然收束</td><td><span class="yes">明确给下一步</span>：谁、做什么、什么时候</td></tr>
+  </table>
+
+  <div class="callout"><p><span class="mnem">口诀</span><b>结论先行，理由跟上；例子落地，首尾呼应。开口先报数，被问先过桥。</b></p></div>
+</section>
+
+<!-- ===== 视图：08 自测 ===== -->
+<section id="s8">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. PREP 的正确顺序是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">理由 → 观点 → 例子 → 观点</button>
+        <button class="q-opt" data-ok="1">观点 → 理由 → 例子 → 重申观点</button>
+        <button class="q-opt" data-ok="0">例子 → 理由 → 观点 → 例子</button>
+      </div>
+      <div class="q-feedback">开头结尾都是同一个结论（P），中间用理由（R）和例子（E）撑住。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 下面哪个邮件标题最好？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">"关于项目的讨论"</button>
+        <button class="q-opt" data-ok="0">"紧急！！！请速回复"</button>
+        <button class="q-opt" data-ok="1">"请拍板：联调提前两天，周四前回复"</button>
+      </div>
+      <div class="q-feedback">动作 + 对象 + 时间，结论直接进标题，对方没点开就知道要干嘛。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 30 秒电梯汇报，最该先给什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">事情的来龙去脉，从头讲清楚</button>
+        <button class="q-opt" data-ok="1">结论 + 一个关键信息 + 一个请求</button>
+        <button class="q-opt" data-ok="0">所有细节，以防领导追问</button>
+      </div>
+      <div class="q-feedback">三十秒里请求比原因重要。背景和细节留着，被问再补。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 会上被问住、一时答不上来，第一步是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">凭印象先答一个，别冷场</button>
+        <button class="q-opt" data-ok="1">复述问题确认，说清什么时候给准数</button>
+        <button class="q-opt" data-ok="0">笑着把话题岔开</button>
+      </div>
+      <div class="q-feedback">过桥法：复述 + 坦诚过渡 + 承诺闭环。瞎答比沉默代价大得多。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 开口先说"我讲三点"，主要是为了什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">显得专业、压场</button>
+        <button class="q-opt" data-ok="1">先报数量逼自己归成三类，也让对方有预期</button>
+        <button class="q-opt" data-ok="0">凑时间用</button>
+      </div>
+      <div class="q-feedback">报数是给自己立框架：讲完三点就停，别发散。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：09 作业与复盘 ===== -->
+<section id="s9">
+  <div class="sec-head">
+    <span class="sec-num">09</span>
+    <h2 class="sec-title">作业：写一封真邮件</h2>
+    <span class="sec-sub">用生成器拼一封，再真的发出去</span>
+  </div>
+  <p class="lead">这周挑一件你本来就要写邮件、或要口头汇报的事，按 PREP 写一遍。写完填复盘。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>要说的事</th><td>一句话：我要达成什么？</td></tr>
+    <tr><th>观点 P</th><td>第一句结论是什么？</td></tr>
+    <tr><th>理由 R</th><td>两条理由，各一句话</td></tr>
+    <tr><th>例子 E</th><td>哪个真事把理由砸实？</td></tr>
+    <tr><th>结尾动作</th><td>请对方什么时候之前做什么？</td></tr>
+    <tr><th>下次改进</th><td>哪一句下次能更短？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面六项依次每行填一条，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 4 课进阶（上）· 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：第4课进阶（下）·结构化分析与框架。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 / 03 卡片 ===== */
+  document.querySelectorAll('#badCards .card, #titleCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02 / 06 折叠步骤 ===== */
+  document.querySelectorAll('#prepSteps .step-head, #onSpot .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#prepSteps .step, #onSpot .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 04 PREP 邮件生成器 ===== */
+  var mailOut = document.getElementById('mailOut');
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function genMail(){
+    var p = document.getElementById('fP').value.trim() || '（请填观点）';
+    var r1 = document.getElementById('fR1').value.trim() || '（请填理由一）';
+    var r2 = document.getElementById('fR2').value.trim() || '（请填理由二）';
+    var e = document.getElementById('fE').value.trim() || '（请填例子）';
+    var html =
+      '主题：建议——' + esc(p) + '\n\n' +
+      '<span class="mk p">P 观点</span>：您好，' + esc(p) + '，想请您拍板。\n\n' +
+      '<span class="mk r">R 理由一</span>：' + esc(r1) + '。\n\n' +
+      '<span class="mk r">R 理由二</span>：' + esc(r2) + '。\n\n' +
+      '<span class="mk e">E 例子</span>：' + esc(e) + '。\n\n' +
+      '<span class="mk p">P 重申</span>：所以我的建议是——' + esc(p) + '，请您周四前回复确认。谢谢。';
+    mailOut.innerHTML = html;
+    mailOut.classList.add('show');
+  }
+  document.getElementById('btnGenMail').addEventListener('click', function(){
+    genMail();
+    showToast('已按 PREP 拼好，可以复制了');
+  });
+  document.getElementById('btnCopyMail').addEventListener('click', function(){
+    if (!mailOut.classList.contains('show')) { showToast('先点「生成邮件」'); return; }
+    var txt = mailOut.textContent;
+    function fallback(){
+      showToast('草稿已显示，请手动全选复制');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('草稿已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+
+  /* ===== 05 三版本 tabs ===== */
+  var tab30 = document.getElementById('tab30'), tab3 = document.getElementById('tab3'), tab15 = document.getElementById('tab15');
+  var pane30 = document.getElementById('pane30'), pane3 = document.getElementById('pane3'), pane15 = document.getElementById('pane15');
+  function showPane(which){
+    tab30.classList.toggle('on', which === 30);
+    tab3.classList.toggle('on', which === 3);
+    tab15.classList.toggle('on', which === 15);
+    pane30.classList.toggle('on', which === 30);
+    pane3.classList.toggle('on', which === 3);
+    pane15.classList.toggle('on', which === 15);
+  }
+  tab30.addEventListener('click', function(){ showPane(30); });
+  tab3.addEventListener('click', function(){ showPane(3); });
+  tab15.addEventListener('click', function(){ showPane(15); });
+
+  /* ===== 08 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去写那封真邮件吧。' : ' —— 回去看 02、05 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 09 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【结构化表达复盘】'];
+    var keys = ['要说的事','观点 P','理由 R','例子 E','结尾动作','下次改进'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第6课 多元思维模型：手里模型多，看事更准</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Crect x='7' y='7' width='7' height='7' rx='1.5' fill='%23C08A2D'/%3E%3Crect x='18' y='7' width='7' height='7' rx='1.5' fill='%23C94F38'/%3E%3Crect x='7' y='18' width='7' height='7' rx='1.5' fill='%233E7C6F'/%3E%3Crect x='18' y='18' width='7' height='7' rx='1.5' fill='%23FBF8F1'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 格栅舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:250px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.grill{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(3,60px);grid-auto-rows:60px;gap:9px;padding:12px;border:1.5px solid rgba(192,138,45,.28);border-radius:14px;transition:box-shadow .6s ease,border-color .6s ease}
+.gcell{display:flex;align-items:center;justify-content:center}
+.gshape{width:30px;height:30px;opacity:0;transform:translateY(-150px) scale(.4)}
+.stage.play .gshape{animation:gdrop .55s cubic-bezier(.34,1.35,.64,1) forwards}
+.stage.play .gcell:nth-child(1) .gshape{animation-delay:.05s}
+.stage.play .gcell:nth-child(2) .gshape{animation-delay:.18s}
+.stage.play .gcell:nth-child(3) .gshape{animation-delay:.31s}
+.stage.play .gcell:nth-child(4) .gshape{animation-delay:.44s}
+.stage.play .gcell:nth-child(5) .gshape{animation-delay:.57s}
+.stage.play .gcell:nth-child(6) .gshape{animation-delay:.70s}
+.stage.play .gcell:nth-child(7) .gshape{animation-delay:.83s}
+.stage.play .gcell:nth-child(8) .gshape{animation-delay:.96s}
+.stage.play .gcell:nth-child(9) .gshape{animation-delay:1.09s}
+@keyframes gdrop{55%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
+.stage.done .grill{border-color:var(--gold);box-shadow:0 0 26px rgba(192,138,45,.45)}
+.stage.done .gshape{filter:drop-shadow(0 0 6px rgba(192,138,45,.55));transition:filter .5s ease .2s}
+.grill-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.4em;color:rgba(251,248,241,.6);white-space:nowrap}
+.grill-done{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.4em;color:var(--gold);white-space:nowrap;opacity:0}
+.stage.done .grill-done{opacity:1;transition:opacity .5s ease .4s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;letter-spacing:.06em}
+.tag.y{background:rgba(192,138,45,.16);color:#8A641C}
+.tag.n{background:rgba(90,100,120,.14);color:var(--muted)}
+.tag.h{background:rgba(201,79,56,.14);color:var(--coral)}
+.tag.g{background:rgba(62,124,111,.15);color:var(--teal)}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .why b{color:var(--ink)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s;min-height:44px}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+.step-body .def{font-size:.95rem;color:var(--ink-2)}
+
+/* 复利计算器 */
+.matrix{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.matrix h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.matrix .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch;margin-bottom:16px}
+.c-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 4px}
+.c-field label{font-size:13px;color:rgba(251,248,241,.75);display:block;margin-bottom:6px}
+.c-field input{width:100%;background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);color:var(--white);border-radius:6px;padding:9px 6px;font-family:var(--sans);font-size:1rem;text-align:center;min-width:0}
+.c-field input:focus{outline:none;border-color:var(--gold)}
+.c-result{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,4vw,1.8rem);color:var(--gold);margin:16px 0 6px}
+.c-bar{height:10px;border-radius:6px;background:rgba(251,248,241,.12);overflow:hidden}
+.c-fill{height:100%;width:10%;border-radius:6px;background:var(--gold);transition:width .35s ease}
+.c-note{font-size:.9rem;color:rgba(251,248,241,.7);margin-top:10px;min-height:22px}
+.c-note b{color:#E0B45C}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s;min-height:44px}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s;min-height:44px}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem;line-height:1.9}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:225px}
+  .grill{grid-template-columns:repeat(3,52px);grid-auto-rows:52px;gap:8px;padding:10px}
+  .gshape{width:26px;height:26px}
+  .matrix{padding:22px 16px}
+  .c-row{gap:7px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .gshape{opacity:1;transform:none}
+  .grill{border-color:var(--gold);box-shadow:0 0 26px rgba(192,138,45,.45)}
+  .grill-done{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="grill-tag">思 维 格 栅</div>
+    <div class="grill" id="grill">
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><circle cx="15" cy="15" r="12" fill="#C08A2D"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><rect x="4" y="4" width="22" height="22" rx="3" fill="#C94F38"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><path d="M15 4 L27 25 L3 25 Z" fill="#3E7C6F"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><rect x="15" y="3" width="16" height="16" rx="2" transform="rotate(45 15 15)" fill="#FBF8F1"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><path d="M15 3 a12 12 0 1 0 0.1 0 Z M15 9 a6 6 0 1 1 -0.1 0 Z" fill="#C94F38"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><path d="M15 3 L26 9.5 V20.5 L15 27 L4 20.5 V9.5 Z" fill="#C08A2D"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><ellipse cx="15" cy="15" rx="12" ry="8" fill="#3E7C6F"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><path d="M5 22 L15 6 L25 22 Z" fill="#FBF8F1" opacity=".9"/></svg></div>
+      <div class="gcell"><svg class="gshape" viewBox="0 0 30 30"><circle cx="15" cy="15" r="12" fill="none" stroke="#C08A2D" stroke-width="3.5"/></svg></div>
+    </div>
+    <div class="grill-done">格 栅 立 住 · 看 事 更 准</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 收 官 课</div>
+    <h1>多元<span class="accent">思维模型</span></h1>
+    <div class="hero-sub">手里只有一把锤子，看什么都像钉子。<br>这节课往你脑子里，多装几把趁手的模型。</div>
+    <div class="hero-meta">芒格格栅 · 复利 · 概率 · 逆向 · 机会成本 · 生态位</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 锤子与钉子 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">锤子与钉子</h2>
+    <span class="sec-sub">手里模型越多，看问题越准</span>
+  </div>
+  <p class="lead">芒格有个著名的比喻：<b class="strong">手里只有一把锤子的人，看什么都像钉子</b>。一个问题来了，你只有一个模型，就只能用这一个模型去砸它——砸不动，不是问题难，是工具不对。</p>
+  <p>多元思维模型的意思是：<b>不同学科各有几把好用的"锤子"，你把它们都装进脑子，遇到问题先掂量该用哪一把</b>。模型就是你看世界的透镜：一把透镜只看得到一种形状，十几把叠在一起，事物的轮廓才立体。</p>
+
+  <p class="kicker">练一练：点开看看，这是锤子视角还是格栅视角</p>
+  <div class="cards" id="hammerCards">
+    <div class="card"><h4><span class="tag h">锤子</span>项目延期</h4><div class="why">眼里只有"进度"这一把锤：延期 = 人不行 = 加压、骂人、加人。结果是加了人反而更慢，问题根本没被看见。</div><p class="hint">点开看格栅视角</p><div class="why" style="border-top:none;padding-top:0"><b>格栅视角：</b>概率模型看——延期本来就大概率发生，排期时就该留 buffer；逆向模型看——先想怎么保证它一定延期，把那些雷排掉。</div></div>
+    <div class="card"><h4><span class="tag h">锤子</span>产品没人用</h4><div class="why">眼里只有"功能"这一把锤：没人用 = 功能不够 = 继续加功能。越加越臃肿，用户还是不来。</div><p class="hint">点开看格栅视角</p><div class="why" style="border-top:none;padding-top:0"><b>格栅视角：</b>生态位模型看——巨头覆盖的地方你打不过，换个它看不上的小角落；机会成本模型看——你花一个月加功能，放弃的是验证定位的时间。</div></div>
+    <div class="card"><h4><span class="tag g">格栅</span>做长期个人成长规划</h4><div class="why">复利模型看——每天读十页书，十年后是另一回事；机会成本模型看——刷掉的短视频时间，本来能投在哪；概率模型看——技能要挑"重复用得上"的，期望值才高。</div><p class="hint">点开看为什么</p><div class="why" style="border-top:none;padding-top:0"><b>为什么对：</b>同一个问题，三把模型轮着看，结论互相印证——这就是格栅的威力，不是一把锤子砸到底。</div></div>
+    <div class="card"><h4><span class="tag n">日常</span>中午吃什么</h4><div class="why">这种事一把锤都不用抡，拍脑袋就定。模型库是用来对付"想不明白的事"的，别杀鸡用牛刀。</div><p class="hint">点开看提醒</p><div class="why" style="border-top:none;padding-top:0"><b>提醒：</b>模型不是越多越要用。小决策凭直觉，大决策才架格栅——这也是一种自知之明。</div></div>
+  </div>
+
+  <div class="callout red"><p><b>一句话：</b>不是要你记住一百个模型，而是养成一个习惯——<b>遇到想不通的事先问一句：这个问题，我手里还有哪把锤子没掏出来？</b></p></div>
+</section>
+
+<!-- ===== 视图：02 核心模型逐个讲 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">五个最常用的模型</h2>
+    <span class="sec-sub">每个一句话定义 + 一个上手场景</span>
+  </div>
+  <p class="lead">先从这五个开始。它们横跨金融、数学、心理学、生物学——这正是芒格说的"跨学科格栅"：<b class="strong">好模型从来不只属于一个专业</b>。点开每一条看怎么用。</p>
+
+  <div class="steps" id="modelSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">复利<small>利滚利：收益本身再产生收益，时间越长越夸张</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p class="def"><b>一句话定义：</b>很小的起步，只要持续、不中断，时间会把它放大成你想不到的体量。</p>
+        <p><b>应用场景：</b>排个人成长——每天读十页书、每周写一段复盘，单看一天什么都不是，三年后和身边人的差距就是这么拉开的。下一节有个计算器，你亲手按按看。</p>
+        <div class="eg"><b>提醒：</b>复利最大的敌人是中断。断一天损失的不是一天，是"连续性"——所以每天哪怕做最小剂量也别停。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">概率<small>不猜"会不会"，估"有多大可能"</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p class="def"><b>一句话定义：</b>事情很少绝对发生或绝对不发生，凡事先估一个大概的可能性，再按大小分配精力。</p>
+        <p><b>应用场景：</b>排期——不是"这个接口三天能做完吗"，而是"八成要五天，两成要八天，我按几天排？"留的 buffer 是给概率的，不是给"意外"的。</p>
+        <div class="eg"><b>提醒：</b>估概率不用精确到个位，"大概率 / 五五开 / 够呛"三档就够用。关键是逼自己从"想当然"变成"估个数"。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">逆向<small>反过来想：先想怎么会搞砸，就别那么做</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p class="def"><b>一句话定义：</b>想知道怎么成功很难，想知道怎么必死却容易。把"怎么必死"列出来，绕着走。</p>
+        <p><b>应用场景：</b>上线前自检——别问"这次怎么才能成"，问"这次要怎么才能彻底搞砸"：忘了回滚？数据没备份？没人测？把答案一条条划掉，基本就稳了。</p>
+        <div class="eg"><b>提醒：</b>逆向专治"只往好处想"。它不保证你赢，但能挡住大部分低级死法。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">机会成本<small>选了这个，就等于放弃了那个的价值</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p class="def"><b>一句话定义：</b>你真正付出的代价，不是花出去的钱，而是你为此放弃的、本来最好的那个选项。</p>
+        <p><b>应用场景：</b>两个需求只能先做一个——别只比"哪个简单"，要算"不做哪个，亏的是什么"。资源永远不够，放弃哪个都有成本，选"放弃了最不心疼"的那个组合。</p>
+        <div class="eg"><b>提醒：</b>加班同理——多干一小时活的成本，是这一小时本来能用来休息、陪家人或学东西的最好用途。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">5</span><span class="step-title">生态位<small>每种生物占一个位置，不跟强者正面硬刚</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p class="def"><b>一句话定义：</b>在生态里，活下来的不是最强的，是找到了别人没空占、自己又站得住的那个角落。</p>
+        <p><b>应用场景：</b>产品定位——你一个小团队，正面跟成熟产品比功能比不过。找它顾不上的人群、场景、小语种、冷门流程，把那个角落做透，先活下来再说。</p>
+        <div class="eg"><b>提醒：</b>生态位不是躲，是精确选战场。先问：哪个角落是巨头看不上、我又能做到第一的？</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>用法：</b>不用一次全用。遇到事了，从这五把里挑一把先抡一轮，抡不动再换一把——换模型这个动作本身，就已经赢过大多数人了。</p></div>
+</section>
+
+<!-- ===== 视图：03 复利计算器 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">亲手按按：复利长什么样</h2>
+    <span class="sec-sub">数字全是示意，感受"时间"这个变量</span>
+  </div>
+  <p class="lead">很多人低估复利，是因为<b class="strong">前半截慢得像没有变化</b>。改一下年限这个数字，你会看到它什么时候开始"陡"起来。</p>
+
+  <div class="matrix" id="calc">
+    <h3>复利计算器（示意）</h3>
+    <p class="desc">公式：本息 = 本金 ×（1 + 年化）^ 年限。下面所有数字均为教学示意，不构成任何投资建议。</p>
+    <div class="c-row">
+      <div class="c-field"><label for="cP">本金（元）</label><input type="number" id="cP" value="10000" min="0" step="1000" aria-label="本金"></div>
+      <div class="c-field"><label for="cR">年化收益率（%）</label><input type="number" id="cR" value="8" min="0" max="50" step="1" aria-label="年化收益率"></div>
+      <div class="c-field"><label for="cY">年限（年）</label><input type="number" id="cY" value="10" min="1" max="50" step="1" aria-label="年限"></div>
+    </div>
+    <div class="c-result" id="cResult">本息总额 ≈ ¥21,589（示意）</div>
+    <div class="c-bar"><div class="c-fill" id="cFill" style="width:30%"></div></div>
+    <div class="c-note" id="cNote">把年限从 10 年改到 30 年看看——曲线在后半截才开始陡。这就是"坚持"的数学长相。</div>
+  </div>
+
+  <div class="callout teal"><p><b>迁移到习惯：</b>这个"前慢后陡"的曲线，就是读书、健身、学技能的曲线。<b>前三年看不出差距，第五年被甩开车尾。</b>别在前半截放弃。</p></div>
+</section>
+
+<!-- ===== 视图：04 跨界组合练习 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">跨界组合：模型是借来的，用是自己的</h2>
+    <span class="sec-sub">属思维练习，不是精确科学结论</span>
+  </div>
+  <p class="lead">真正拉开差距的，不是你背了多少模型，而是你敢不敢<b class="strong">把 A 领域的模型，搬到 B 领域去用</b>。下面是三个迁移练习——注意，它们是帮你换个角度想问题的，不是放之四海的定理。</p>
+
+  <div class="cards" id="crossCards">
+    <div class="card"><h4><span class="tag g">迁移</span>生态位 → 产品定位</h4><div class="why">生物学里每种生物有自己的生态位。借到产品上：别一上来就问"我比对手强在哪"，先问"哪个角落对手没占、我站得住"。<br><b>练习用法：</b>写下你的产品服务的三类人群，圈出成熟产品最懒得搭理的那一类。</div><p class="hint">点开看练习方法</p></div>
+    <div class="card"><h4><span class="tag g">迁移</span>复利 → 习惯养成</h4><div class="why">金融里利滚利，习惯里也是：今天多懂的那一点，明天会成为你理解新东西的底子。<br><b>练习用法：</b>把目标从"这周读完一本书"改成"每天只读两页"——保住连续性，比冲量重要。</div><p class="hint">点开看练习方法</p></div>
+    <div class="card"><h4><span class="tag g">迁移</span>逆向 → 项目排雷</h4><div class="why">"怎么必败"列出来，绕着走。借到项目上：上线前开个"翻车会"，人人说一件这个项目会怎么死。<br><b>练习用法：</b>把说出的死法一条条变成检查项，全划掉再上线。</div><p class="hint">点开看练习方法</p></div>
+    <div class="card"><h4><span class="tag g">迁移</span>概率 → 排优先级</h4><div class="why">不做"重不重要"的二选一，做"哪件事成了之后收益最大、成的概率还不低"。<br><b>练习用法：</b>把待办写成两列：成功收益、成功概率。先干"双高"的，双低的直接扔。</div><p class="hint">点开看练习方法</p></div>
+  </div>
+
+  <div class="callout"><p><b>说明：</b>跨界组合是思维体操——它帮你跳出习惯视角，<b>不是说生物学定律直接适用于商业</b>。用它打开思路，落地时还得回到自己的真实情况验证。</p></div>
+</section>
+
+<!-- ===== 视图：05 建自己的模型库 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">建一个自己的模型清单</h2>
+    <span class="sec-sub">怎么收集、怎么验证、怎么更新</span>
+  </div>
+  <p class="lead">模型库不是收藏夹，是<b class="strong">你亲手用过、被事实验过的那几把锤</b>。三步把它养起来。</p>
+
+  <div class="steps" id="libSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">收集：遇到好用的框架就记一句<small>每条只记：名字 + 一句话定义 + 出处</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>读书、开会、复盘时，遇到"这句话讲得真对"的框架，别只点赞——记进清单：<b>模型名 + 一句话定义 + 我在哪遇到的</b>。一条不超过两行。</p>
+        <div class="eg"><b>例：</b>"机会成本：选A就是放弃B。出处：这次排需求纠结时想到的。"——就这种颗粒度。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">验证：拿真事试一次，记"好使不好使"<small>没被用过的模型，不算你的</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>每攒到一个新模型，一周内强行用它分析一件真事：用了之后写一句——<b>它帮我看清了什么？还是只是听着爽？</b>只收集不验证，收藏夹会越攒越心虚。</p>
+        <div class="eg"><b>例：</b>用逆向模型列了上线翻车清单，真躲过一个坑——就在这条后面打个勾，标"实战过"。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">更新：每季度清一次库<small>删过时的，补新的，别让清单变成古董摊</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>一个季度花半小时翻清单：<b>这季度哪条根本没用过？删掉或者降级。哪类事反复让我卡住？说明我缺一把新锤，去补。</b>模型库跟代码一样，要维护，不然越攒越乱。</p>
+        <div class="eg"><b>提醒：</b>清单控制在十条左右最顺手。三十条记不住，等于没有。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b><span class="mnem">口诀</span>锤子别只买一把，钉子别只认一种。<br>模型多了不压身，会挑才是真功夫。</b></p></div>
+</section>
+
+<!-- ===== 视图：06 自测 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. "手里只有一把锤子，看什么都像钉子"在说什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">干活要随身带工具</button>
+        <button class="q-opt" data-ok="1">思维模型太少，所有问题都硬套同一个框架</button>
+        <button class="q-opt" data-ok="0">钉子质量不好，老砸歪</button>
+      </div>
+      <div class="q-feedback">不是你能力差，是工具单一。解决办法是多备几把"锤"，遇事挑着用。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 逆向思维最顺手的用法是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">先想"这事怎么会彻底搞砸"，把那些雷一个个排掉</button>
+        <button class="q-opt" data-ok="0">反着说话，跟人抬杠</button>
+        <button class="q-opt" data-ok="0">先想"这事怎么一定成"，然后许愿</button>
+      </div>
+      <div class="q-feedback">逆向不是唱反调，是用"必死清单"保护你。难的事别正面硬想成功，先把死法列出来。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 两个需求这个迭代只能做一个，该掏出哪把锤？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">锤子：哪个简单做哪个</button>
+        <button class="q-opt" data-ok="1">机会成本：选A的真实代价，是放弃B能带来的价值</button>
+        <button class="q-opt" data-ok="0">抛硬币</button>
+      </div>
+      <div class="q-feedback">选哪个都有隐形成本。算清"不做哪个亏得最疼"，比算"做哪个最省事"靠谱。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 把复利模型用在习惯养成上，哪个说法靠谱？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">每天只做最小量、但不中断，时间越长差距越大（思维练习，示意）</button>
+        <button class="q-opt" data-ok="0">每天必须猛学十小时才叫复利</button>
+        <button class="q-opt" data-ok="0">习惯和复利没关系</button>
+      </div>
+      <div class="q-feedback">复利最怕中断。每天两页书胜过周末突击十小时——连续性才是那个"利滚利"。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 怎么验证一个新模型适不适合自己？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">听上去有道理就算学会</button>
+        <button class="q-opt" data-ok="1">一周内拿一件真事用一次，记下它是帮上忙还是帮倒忙</button>
+        <button class="q-opt" data-ok="0">先背熟一百个再说</button>
+      </div>
+      <div class="q-feedback">收藏夹里的模型不是你的。用过、被事实验过的，才进得了你的格栅。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：07 作业与复盘 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">作业：建你的第一张模型清单</h2>
+    <span class="sec-sub">五条起步，够用就好</span>
+  </div>
+  <p class="lead">这周就干一件事：从五个模型里挑出你最有感觉的两三条，配上自己真实用过的例子，写下你的第一条模型清单。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>我的锤子史</th><td>最近一次"看什么都像钉子"，是哪个问题？我当时只会哪一把锤？</td></tr>
+    <tr><th>新用的模型</th><td>这周真事里，我试了哪个模型？</td></tr>
+    <tr><th>它帮我看清了</th><td>用之前怎么想，用之后怎么想？</td></tr>
+    <tr><th>我的清单第1条</th><td>模型名 + 一句话定义（按上面表格格式）</td></tr>
+    <tr><th>下季度要补的锤</th><td>哪类事最近老卡住我？我可能缺哪个模型？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题填在这里，每行一项，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 6 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：沟通篇·非暴力沟通——思考篇收官，进入沟通篇。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 锤子卡 ===== */
+  document.querySelectorAll('#hammerCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02 模型折叠 ===== */
+  document.querySelectorAll('#modelSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#modelSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 03 复利计算器 ===== */
+  var cP = document.getElementById('cP');
+  var cR = document.getElementById('cR');
+  var cY = document.getElementById('cY');
+  var cResult = document.getElementById('cResult');
+  var cFill = document.getElementById('cFill');
+  var cNote = document.getElementById('cNote');
+  function fmt(n){ return '¥' + Math.round(n).toLocaleString('en-US'); }
+  function compute(){
+    var p = parseFloat(cP.value); if (isNaN(p) || p < 0) p = 0;
+    var r = parseFloat(cR.value); if (isNaN(r) || r < 0) r = 0;
+    var y = parseInt(cY.value, 10); if (isNaN(y) || y < 1) y = 1;
+    var total = p * Math.pow(1 + r / 100, y);
+    var multiple = p > 0 ? total / p : 0;
+    cResult.textContent = '本息总额 ≈ ' + fmt(total) + '（示意）';
+    var w = Math.min(100, Math.round(Math.log(multiple + 1) / Math.log(40) * 100));
+    if (w < 8) w = 8;
+    cFill.style.width = w + '%';
+    if (y >= 20) {
+      cNote.textContent = '前半截几乎平，后半截开始陡——你已经看到复利曲线最反直觉的部分了。';
+    } else if (multiple >= 2) {
+      cNote.textContent = '翻了约 ' + multiple.toFixed(1) + ' 倍。再把年限加十年，感受一下曲线后半段。';
+    } else {
+      cNote.textContent = '现在只涨了 ' + multiple.toFixed(2) + ' 倍。把年限从 ' + y + ' 年改到 30 年看看——曲线在后半截才开始陡。';
+    }
+  }
+  document.querySelectorAll('#calc input').forEach(function(inp){
+    inp.addEventListener('input', compute);
+  });
+  compute();
+
+  /* ===== 04 跨界卡 ===== */
+  document.querySelectorAll('#crossCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 05 建库折叠 ===== */
+  document.querySelectorAll('#libSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#libSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 06 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去建你的第一条模型清单吧。' : ' —— 回去看 02、05 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 07 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【多元思维模型复盘】'];
+    var keys = ['我的锤子史','新用的模型','它帮我看清了','我的清单第1条','下季度要补的锤'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第5课 认知偏差：大脑偷懒的六个坑</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Ccircle cx='16' cy='8' r='2.6' stroke='%23C08A2D' stroke-width='2' fill='none'/%3E%3Cline x1='16' y1='11' x2='16' y2='23' stroke='%23C08A2D' stroke-width='2'/%3E%3Cpath d='M9 19c1 4 4.5 6 7 6s6-2 7-6' stroke='%23C08A2D' stroke-width='2' fill='none'/%3E%3Ccircle cx='25' cy='24' r='2.4' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 锚定舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:230px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.ruler{position:absolute;left:6%;right:6%;top:122px;height:2px;background:rgba(251,248,241,.25)}
+.tick{position:absolute;top:130px;font-size:11px;color:rgba(251,248,241,.42)}
+.tick0{left:6%}.tickTop{right:6%}
+.anchor-chip{position:absolute;left:72%;top:62px;transform:translateX(-50%);font-family:var(--serif);font-weight:700;font-size:1.02rem;color:var(--gold);background:rgba(192,138,45,.14);border:1.5px solid var(--gold);border-radius:10px;padding:6px 14px;opacity:0;white-space:nowrap}
+.stage.play .anchor-chip{opacity:1;transition:opacity .4s ease}
+.anchor-tag{position:absolute;left:72%;top:38px;transform:translateX(-50%);font-size:11px;letter-spacing:.25em;color:rgba(251,248,241,.5);opacity:0;white-space:nowrap}
+.stage.play .anchor-tag{opacity:1;transition:opacity .4s ease}
+.marker{position:absolute;left:24%;top:105px;width:34px;height:34px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--white);opacity:0;transform:translateX(-50%)}
+.stage.play .marker{opacity:1;animation:markSlide 1.4s ease .4s forwards}
+@keyframes markSlide{0%{left:24%}100%{left:66%}}
+.stage.done .marker{box-shadow:0 0 18px rgba(201,79,56,.85);transition:box-shadow .4s ease}
+.marker-tag{position:absolute;top:80px;font-size:11px;color:rgba(251,248,241,.55);opacity:0;transform:translateX(-50%);white-space:nowrap}
+.stage.play .marker-tag{opacity:1;transition:opacity .3s ease .5s}
+.stage.play .marker-tag{left:24%}
+.stage.done .marker-tag{left:66%;transition:left 1.4s ease .4s,opacity .3s}
+.bias-badge{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-family:var(--serif);font-weight:700;color:var(--white);background:var(--coral);padding:6px 16px;border-radius:8px;font-size:.95rem;letter-spacing:.15em;opacity:0;white-space:nowrap}
+.stage.done .bias-badge{opacity:1;transition:opacity .5s ease .1s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 锚定实验 */
+.lab{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.lab h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.lab .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch}
+.lab-anchor{display:flex;align-items:baseline;justify-content:center;gap:12px;margin:20px 0 8px;transition:opacity .4s ease,filter .4s ease}
+.lab-anchor.dim{opacity:.12;filter:grayscale(1)}
+.lab-anchor-tag{font-size:13px;color:rgba(251,248,241,.6)}
+.lab-anchor-num{font-family:var(--serif);font-weight:900;font-size:2.5rem;color:var(--gold);line-height:1}
+.lab-anchor-cap{font-size:13px;color:rgba(251,248,241,.55)}
+.lab-control{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
+.lab-control label{font-size:13px;color:rgba(251,248,241,.8);white-space:nowrap}
+input[type=range]{flex:1;min-width:180px;accent-color:var(--gold);height:34px}
+.lab-readout{font-family:var(--serif);font-weight:700;color:var(--gold);min-width:74px;text-align:right}
+.m-btn-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.m-btn{background:transparent;border:1.5px solid rgba(192,138,45,.7);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:.88rem;padding:10px 18px;border-radius:8px;cursor:pointer;transition:background .15s}
+.m-btn:hover{background:rgba(192,138,45,.15)}
+.lab-result{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.decision{display:flex;align-items:center;gap:12px;font-size:.93rem}
+.decision .bar{flex:1;height:10px;border-radius:6px;background:rgba(251,248,241,.14);overflow:hidden}
+.decision .fill{height:100%;width:10%;border-radius:6px;background:var(--gold);transition:width .3s ease}
+.decision .label{min-width:104px;color:rgba(251,248,241,.8)}
+.lab-note{font-size:13px;color:rgba(251,248,241,.78);min-height:22px;line-height:1.7}
+
+/* 自测/复盘复用 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:200px}
+  .lab{padding:22px 16px}
+  .lab-anchor{flex-wrap:wrap;gap:6px}
+  .lab-anchor-num{font-size:2rem}
+  .decision .label{min-width:84px;font-size:.85rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .anchor-chip,.anchor-tag{opacity:1}
+  .marker{opacity:1;left:66%;animation:none}
+  .marker-tag{opacity:1;left:66%}
+  .bias-badge{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.q-opt,.btn,.m-btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="ruler"></div>
+    <span class="tick tick0">0</span>
+    <span class="tick tickTop">¥2000</span>
+    <div class="anchor-tag">先 看 到</div>
+    <div class="anchor-chip">参考价 ¥999</div>
+    <div class="marker-tag">你的估值</div>
+    <div class="marker">估</div>
+    <div class="bias-badge">先入为主 · 判断被第一个数字带走</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 第 5 课</div>
+    <h1>认知偏差<span class="accent">怎么躲</span></h1>
+    <div class="hero-sub">你以为拍板靠的是思考，其实很多决定在看到第一个数字、<br class="br">听到第一个故事的那一刻，就已经被定了方向。</div>
+    <div class="hero-meta">确认 · 锚定 · 可得性 · 沉没 · 幸存者 · 损失厌恶</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 大脑为什么会偷懒 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">大脑为什么会偷懒</h2>
+    <span class="sec-sub">偏差不是笨，是出厂设置</span>
+  </div>
+  <p class="lead">大脑每天要处理海量信息，为了省电，它发明了很多快捷方式：<b class="strong">记住容易想起的、相信先看到的、维护已经下过的结论</b>。这些捷径平时很高效，但在重要判断上，它们会悄悄替你做决定。</p>
+  <p>它最坑的地方在于：<b>你根本感觉不到它在运行</b>。你以为自己在"理性分析"，其实结论早就被第一印象、最近的新闻、之前的投入定好了。等你反应过来，决定已经做了。</p>
+  <div class="callout red"><p><b>记住：</b>偏差消灭不了，但<b>认得出来就开始失效</b>。这节课给你六面镜子，照一照自己踩过哪几个坑。</p></div>
+</section>
+
+<!-- ===== 视图：02 六个最常见的坑 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">六个最常见的坑</h2>
+    <span class="sec-sub">每个坑：一个场景 + 一个防御动作</span>
+  </div>
+  <p class="lead">六个偏差，按"场景 → 它怎么坑你 → 怎么躲"排好。点开卡片，看看自己中过几个。</p>
+
+  <div class="cards" id="biasCards">
+    <div class="card"><h4>① 确认偏差</h4><div class="why">你心里先有了答案，眼睛就只看得见支持它的证据。方案提了之后，夸的评论你全看，质疑的自动划过；做竞品调研，只找对自己有利的数据。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>开口前先问一句"如果我是错的，会是因为什么？"再主动找一个不看好你方案的人挑刺。结论先别急着下。</div></div>
+    <div class="card"><h4>② 锚定</h4><div class="why">先出现的数字会绑架后面所有判断。采购先看到 ¥999 的标价，之后砍价、比价全围着它转，觉得 ¥699"很划算"——可这东西值多少，你本来没概念。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>先定自己的尺，再看别人的数。先写好"我的预算和标准是多少"，再打开报价单。锚是别人抛的，别拿它当自己的秤。</div></div>
+    <div class="card"><h4>③ 可得性</h4><div class="why">越容易想起的事，越以为它常见。刚刷到一次生产事故复盘，就把下次发布的风险估得特别高，排期一砍再砍；不靠历史数据，靠"最近好像出过事"做判断。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>用频率说话，不用印象说话。先查历史数据、写下真实频次，再判断。大脑能想起什么，和事情有多常见，是两回事。</div></div>
+    <div class="card"><h4>④ 沉没成本</h4><div class="why">"都做了半年了，现在放弃太亏"——收不回的钱和时间，成了继续往坑里填的理由。项目早就不划算，只因为舍不得之前投的，硬着头皮上线。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>问"从今天开始，这事还值不值得做"，把过去的投入当它不存在。已经花掉的是历史，未来的账才算得清。</div></div>
+    <div class="card"><h4>⑤ 幸存者偏差</h4><div class="why">你只看到活下来的人在说话。看到几个靠加班熬成专家的故事，就默认加班有用；看不到那些倒下、转行、沉默的大多数。成功学样本，天生缺了对照组。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>先问"没活下来的去哪了"。做判断前先找分母：失败的样本、沉默的大多数在哪？看不到他们，结论只对幸存者成立。</div></div>
+    <div class="card"><h4>⑥ 损失厌恶</h4><div class="why">丢 100 块的痛，大约是捡 100 块爽感的两倍。于是明显划算的机会你不敢碰：50% 赚 200、50% 亏 100，算下来稳赚，你却倾向于不玩。</div><p class="hint">点开看防御动作</p><div class="fix"><b>防御：</b>把单次得失放进总资产里看，再小步下注。问"这个亏的上限我承受得起吗"，而不是"我不想亏"。多次重复下来，情绪会被摊平。</div></div>
+  </div>
+
+  <div class="callout"><p><span class="mnem">口诀</span>第一反应，先打个问号——先定自己的尺，再反过来找一遍证据。</p></div>
+</section>
+
+<!-- ===== 视图：03 锚定实验 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">锚定实验：你来当一次被试</h2>
+    <span class="sec-sub">同一个你，一个数字之差</span>
+  </div>
+  <p class="lead">锚定是六个偏差里最容易当场验证的。场景很简单：收一台用了几年的开发笔记本。<b class="strong">先告诉你一个信息，再请你在滑杆上给出"你觉得多少钱收合理"</b>。</p>
+
+  <div class="lab" id="anchorLab">
+    <h3>试一次：你的估值被带走了吗</h3>
+    <p class="desc">先看一眼下面这个数字，然后拖动滑杆，给出你心里的收购价，再点"记下我的估值"。</p>
+    <div class="lab-anchor" id="anchorBox">
+      <span class="lab-anchor-tag">你先看到</span>
+      <span class="lab-anchor-num">¥999</span>
+      <span class="lab-anchor-cap">商家参考价（示意）</span>
+    </div>
+    <div class="lab-control">
+      <label for="estSlider">我的估值</label>
+      <input type="range" id="estSlider" min="0" max="2000" value="500" aria-label="我的估值">
+      <span class="lab-readout" id="estVal">¥500</span>
+    </div>
+    <div class="m-btn-row">
+      <button class="m-btn" id="btnLock">记下我的估值</button>
+      <button class="m-btn" id="btnSwap" style="display:none">切到无锚点组</button>
+    </div>
+    <div class="lab-result" id="labResult" style="display:none">
+      <div class="decision">
+        <span class="label">你的估值</span>
+        <div class="bar"><div class="fill" id="youFill" style="background:var(--coral)"></div></div>
+        <span class="lab-readout" id="youNum"></span>
+      </div>
+      <div class="decision">
+        <span class="label">无锚点组典型</span>
+        <div class="bar"><div class="fill" style="width:25%;background:var(--teal)"></div></div>
+        <span class="lab-readout" style="color:#7FB8A5">¥500</span>
+      </div>
+      <div class="lab-note" id="labNote"></div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b>看懂了吗：</b>差别不在人，在<b>第一个数字</b>。下次报价、谈薪、排期评审之前，先把"自己的尺"写在纸上，再去看别人抛过来的锚。</p></div>
+</section>
+
+<!-- ===== 视图：04 自测 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 确认偏差最典型的表现是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">只找支持自己的证据，自动过滤反面信息</button>
+        <button class="q-opt" data-ok="0">做决定前先列优缺点</button>
+        <button class="q-opt" data-ok="0">特别确认数据来源是否可靠</button>
+      </div>
+      <div class="q-feedback">心里先有答案，眼睛就只看得见支持它的。破解：主动找反方，先问"如果我是错的，证据在哪"。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 遇到报价、预算、目标数字，最该先做哪一步？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">顺着报价往上谈一点</button>
+        <button class="q-opt" data-ok="1">先定自己的标准和预算，再看外部数字</button>
+        <button class="q-opt" data-ok="0">货比三家，谁低信谁</button>
+      </div>
+      <div class="q-feedback">锚是别人抛的。先写好自己的尺，再打开报价单——参照系由你定，不由别人定。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 刚刷到一次事故新闻，就把项目风险估得特别高，这是哪个偏差？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">损失厌恶</button>
+        <button class="q-opt" data-ok="1">可得性：越容易想起，越以为常见</button>
+        <button class="q-opt" data-ok="0">幸存者偏差</button>
+      </div>
+      <div class="q-feedback">大脑用"好不好想起来"代替"常不常见"。破解：查历史频次，写数字，别靠印象。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 项目做了半年不见起色，"已经投了这么多"该不该成为继续的理由？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">该，半途而废前功尽弃</button>
+        <button class="q-opt" data-ok="1">不该，问"从今天开始它还值不值得做"</button>
+        <button class="q-opt" data-ok="0">再做半年看看</button>
+      </div>
+      <div class="q-feedback">已经收不回的投入是沉没成本。它是历史账，不该决定未来账。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 看到几个成功案例就照搬模式，最容易漏掉什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">成功案例的细节</button>
+        <button class="q-opt" data-ok="1">没看到那些倒下、消失的失败样本</button>
+        <button class="q-opt" data-ok="0">案例的行业背景</button>
+      </div>
+      <div class="q-feedback">幸存者偏差：成功故事会说话，失败案例是沉默的。下结论前先找分母。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：05 作业与复盘 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">作业：复盘一次自己的判断</h2>
+    <span class="sec-sub">这周抓一个真实决定，对六个偏差打勾</span>
+  </div>
+  <p class="lead">挑一个你最近下的决定，或者正在纠结的事。别找大事，哪怕是买东西、定排期都可以。对照六个偏差填一遍。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>我下的判断</th><td>一句话，我决定了什么？</td></tr>
+    <tr><th>先入数字/故事</th><td>第一个进脑子的是哪个数字或故事？</td></tr>
+    <tr><th>反面证据</th><td>我找过不支持自己的证据吗？</td></tr>
+    <tr><th>沉默的样本</th><td>那些没成的、消失的，我考虑了吗？</td></tr>
+    <tr><th>过去的投入</th><td>我是在为未来决定，还是舍不得过去？</td></tr>
+    <tr><th>下次防御动作</th><td>一句话，下次先做哪一步？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题逐行填在这里（一行一项），然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 5 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：第6课·多元思维模型。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 02 偏差卡片 ===== */
+  document.querySelectorAll('#biasCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 03 锚定实验 ===== */
+  var slider = document.getElementById('estSlider');
+  var estVal = document.getElementById('estVal');
+  var btnLock = document.getElementById('btnLock');
+  var btnSwap = document.getElementById('btnSwap');
+  var labResult = document.getElementById('labResult');
+  var youFill = document.getElementById('youFill');
+  var youNum = document.getElementById('youNum');
+  var labNote = document.getElementById('labNote');
+  var anchorBox = document.getElementById('anchorBox');
+  var swapped = false;
+  function updVal(){ estVal.textContent = '¥' + slider.value; }
+  slider.addEventListener('input', updVal);
+  btnLock.addEventListener('click', function(){
+    var v = parseInt(slider.value, 10);
+    labResult.style.display = 'flex';
+    youFill.style.width = Math.max(6, Math.round(v / 2000 * 100)) + '%';
+    youNum.textContent = '¥' + v;
+    var note;
+    if (v >= 750) {
+      note = '结果：你的估值被 ¥999 往上带了。没看到这个数字的无锚点组，典型估值在 ¥500 附近（示意）。同一个你、同一台本子，只因为先看了一个数字，判断就偏了——这就是锚定。';
+    } else if (v >= 400) {
+      note = '结果：你的估值离锚点不远不近。实验里的平均规律是：看过 ¥999 的人，估值普遍比无锚点组高约三成（示意）。下次先定好自己的尺，再看报价。';
+    } else {
+      note = '结果：你的估值很稳，没被锚点带走。但实验显示，多数人即使知道锚定效应，还是会悄悄偏——下一次先把预算写在纸上，再打开报价单。';
+    }
+    labNote.textContent = note;
+    btnSwap.style.display = 'inline-block';
+  });
+  btnSwap.addEventListener('click', function(){
+    swapped = !swapped;
+    anchorBox.classList.toggle('dim', swapped);
+    if (swapped) {
+      labNote.textContent = '现在是无锚点组：没人告诉他们 ¥999。大家从"这台旧本子值多少"自己出发，估值集中在 ¥500 附近（示意）。差别不在人，在第一个数字。';
+      btnSwap.textContent = '切回锚点组';
+    } else {
+      btnLock.clicked = false;
+      labNote.textContent = '回到锚点组：有 ¥999 先入为主，估值整体被抬高。再想想：你上一次报价、谈薪、定排期，先入为主的数字是哪个？';
+      btnSwap.textContent = '切到无锚点组';
+    }
+  });
+
+  /* ===== 04 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去复盘一次自己的判断吧。' : ' —— 回去看 02、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 05 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【认知偏差复盘】'];
+    var keys = ['我下的判断','先入数字/故事','反面证据','沉默的样本','过去的投入','下次防御动作'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

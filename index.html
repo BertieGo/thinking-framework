@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>思维框架实战课 · 课程地图</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M16 5l3 6 6 .9-4.5 4.2 1.2 6.4L16 19l-5.7 3.5 1.2-6.4L7 11.9l6-.9z' fill='%23C08A2D'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.7;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* 首屏 */
+.hero{position:relative;min-height:78vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px 60px;overflow:hidden}
+.hero-inner{position:relative;z-index:2;max-width:860px;width:100%}
+.eyebrow{font-size:14px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6.5vw,4rem);line-height:1.2;margin:16px 0 12px;opacity:0;transform:translateY(16px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(.98rem,2.4vw,1.25rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(12px)}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .3s,transform .8s ease .3s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.1s,transform 1s ease 1.1s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2s,transform .8s ease 2s}
+
+/* 进度线 */
+.progress{position:relative;max-width:760px;margin:44px auto 0;opacity:0}
+.hero.ready .progress{opacity:1;transition:opacity 1s ease 2.6s}
+.progress-line{height:3px;background:rgba(251,248,241,.16);border-radius:3px;position:relative}
+.progress-fill{position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#E3B84C);border-radius:3px;transform-origin:left}
+.hero.ready .progress-fill{animation:fillLine 1.8s ease 2.8s forwards}
+@keyframes fillLine{to{width:100%}}
+.progress-tags{display:flex;justify-content:space-between;margin-top:14px;font-size:13px;color:rgba(251,248,241,.65);letter-spacing:.12em}
+.progress-tags span b{color:var(--gold);font-weight:700}
+.progress-tags span{opacity:0;transform:translateY(6px)}
+.hero.ready .progress-tags span{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
+.hero.ready .progress-tags span:nth-child(1){transition-delay:3.2s}
+.hero.ready .progress-tags span:nth-child(2){transition-delay:3.6s}
+.hero.ready .progress-tags span:nth-child(3){transition-delay:4s}
+
+main{max-width:920px;margin:0 auto;padding:0 22px 80px}
+section{padding:60px 0 6px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:22px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.35rem,3.4vw,1.8rem)}
+.sec-count{margin-left:auto;font-size:13px;color:var(--muted)}
+.lessons{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.lesson{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px 18px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:14px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.lesson:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.lesson-num{flex:none;font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--white);background:var(--ink);border-radius:9px;min-width:46px;height:46px;display:flex;align-items:center;justify-content:center}
+.lesson-sub{flex:none;min-width:52px;height:46px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700}
+.lesson-sub.adv{background:rgba(192,138,45,.14);color:#8A641C}
+.lesson-text{min-width:0}
+.lesson-text h3{font-size:1.02rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson-text p{font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0 0}
+.lesson-arrow{margin-left:auto;color:var(--gold);font-size:1.1rem;flex:none}
+.note{background:var(--paper-2);border-left:4px solid var(--gold);padding:14px 16px;margin-top:26px;border-radius:0 10px 10px 0;font-size:.93rem}
+.note b{color:var(--teal)}
+footer{padding:30px 22px 40px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.88rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.02rem;margin-bottom:8px}
+@media (max-width:640px){
+  .lessons{grid-template-columns:1fr}
+  .progress-tags{font-size:11px;flex-wrap:wrap;gap:6px}
+  .lesson{padding:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .progress{opacity:1;transform:none;transition:none}
+  .progress-fill{width:100%}
+  .progress-tags span{opacity:1;transform:none}
+  .lesson{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课</div>
+    <h1>想清楚，<span class="accent">说清楚</span>，做明白</h1>
+    <div class="hero-sub">12 个可练习的课件 · 每课一个能记住的方法</div>
+    <div class="progress">
+      <div class="progress-line"><div class="progress-fill"></div></div>
+      <div class="progress-tags">
+        <span>思考篇 <b>8</b> 课</span>
+        <span>沟通篇 <b>3</b> 课</span>
+        <span>干活篇 <b>1</b> 课 · 持续更新</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="sec-head"><span class="sec-num">壹</span><h2 class="sec-title">思考篇 · 把问题想透</h2><span class="sec-count">8 课</span></div>
+  <div class="lessons">
+    <a class="lesson" href="lessons/第1课-双系统思维.html"><span class="lesson-num">1</span><span class="lesson-text"><h3>双系统思维</h3><p>快直觉与慢理性，何时切换</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第2课-第一性原理.html"><span class="lesson-num">2</span><span class="lesson-text"><h3>第一性原理</h3><p>拆到基本事实，从地基重建</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第3课-系统思考.html"><span class="lesson-num">3</span><span class="lesson-text"><h3>系统思考</h3><p>反馈回路与杠杆点</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第4课-结构化思维.html"><span class="lesson-num">4</span><span class="lesson-text"><h3>结构化思维</h3><p>金字塔、MECE、SCQA</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第4课进阶-上-结构化表达实战.html"><span class="lesson-sub adv">4·上</span><span class="lesson-text"><h3>结构化表达实战</h3><p>PREP、汇报三版本、我讲三点</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第4课进阶-下-结构化分析与框架.html"><span class="lesson-sub adv">4·下</span><span class="lesson-text"><h3>结构化分析与框架</h3><p>议题树、5Why、经典框架的MECE本质</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第5课-认知偏差.html"><span class="lesson-num">5</span><span class="lesson-text"><h3>认知偏差</h3><p>聪明人也会踩的六个坑</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第6课-多元思维模型.html"><span class="lesson-num">6</span><span class="lesson-text"><h3>多元思维模型</h3><p>复利、概率、逆向与格栅思维</p></span><span class="lesson-arrow">›</span></a>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">贰</span><h2 class="sec-title">沟通篇 · 把话说明白</h2><span class="sec-count">3 课</span></div>
+  <div class="lessons">
+    <a class="lesson" href="lessons/第7课-非暴力沟通.html"><span class="lesson-num">7</span><span class="lesson-text"><h3>非暴力沟通</h3><p>观察-感受-需要-请求</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第8课-金字塔表达.html"><span class="lesson-num">8</span><span class="lesson-text"><h3>金字塔表达</h3><p>结论先行，以上统下</p></span><span class="lesson-arrow">›</span></a>
+    <a class="lesson" href="lessons/第9课-关键对话.html"><span class="lesson-num">9</span><span class="lesson-text"><h3>关键对话</h3><p>高风险对话怎么谈</p></span><span class="lesson-arrow">›</span></a>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">叁</span><h2 class="sec-title">干活篇 · 把事做成</h2><span class="sec-count">1 课 · 持续更新</span></div>
+  <div class="lessons">
+    <a class="lesson" href="lessons/第10课-决策.html"><span class="lesson-num">10</span><span class="lesson-text"><h3>决策</h3><p>算得清、能执行、错了能退</p></span><span class="lesson-arrow">›</span></a>
+  </div>
+  <div class="note"><b>使用建议：</b>每课 15-20 分钟，先看再练。自测答对 4 题算过，作业模板直接复制到自己的笔记里。别贪多，一天一课足矣。</div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">思维框架实战课 · 课程地图</div>
+  12 个课件 · 每课独立成页 · 手机电脑均可直接打开 · Albert Huang
+</footer>
+
+<script>
+(function(){
+  setTimeout(function(){ document.getElementById('hero').classList.add('ready'); }, 200);
+})();
+</script>
+</body>
+</html>

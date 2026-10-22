@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第10课 决策：怎么定，才不后悔</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M8 8h16l-6 7v8l-4-2v-6z' fill='%23C08A2D'/%3E%3Ccircle cx='25' cy='7' r='3' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 决策漏斗舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:250px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.funnel{position:absolute;left:50%;top:16px;transform:translateX(-50%);width:min(330px,80%)}
+.funnel-svg{width:100%;height:auto}
+.bub{position:absolute;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:14px;color:var(--white);opacity:0;top:-12px}
+.bub-A{left:30%;background:rgba(201,79,56,.85);box-shadow:0 0 10px rgba(201,79,56,.5)}
+.bub-B{left:43%;background:rgba(62,124,111,.9);box-shadow:0 0 10px rgba(62,124,111,.5)}
+.bub-C{left:56%;background:rgba(192,138,45,.95);box-shadow:0 0 12px rgba(192,138,45,.6)}
+.bub-D{left:34%;background:rgba(94,110,145,.9);box-shadow:0 0 10px rgba(94,110,145,.5)}
+.stage.play .bub{animation:dropIn .55s ease-out forwards}
+.stage.play .bub-A{animation-delay:.1s}
+.stage.play .bub-B{animation-delay:.3s}
+.stage.play .bub-C{animation-delay:.5s}
+.stage.play .bub-D{animation-delay:.7s}
+@keyframes dropIn{0%{opacity:0;transform:translateY(0) scale(.6)}30%{opacity:1}100%{opacity:1;transform:translateY(118px) scale(1)}}
+.stage.done .bub-A,.stage.done .bub-B,.stage.done .bub-D{opacity:0;transition:opacity .45s ease}
+.stage.done .bub-C{transform:translateY(196px) scale(1.08);box-shadow:0 0 22px rgba(192,138,45,.85);transition:transform .55s ease .15s,box-shadow .55s ease .15s}
+.gate{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);width:86px;height:34px;border:2px solid rgba(192,138,45,.55);border-radius:6px;opacity:.5}
+.gate::after{content:"";position:absolute;left:50%;top:50%;width:0;height:0;border:7px solid transparent;border-top-color:rgba(192,138,45,.55);transform:translate(-50%,-50%)}
+.stage.done .gate{opacity:1;border-color:var(--gold)}
+.pick{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.4em;color:var(--gold);opacity:0;white-space:nowrap}
+.stage.done .pick{opacity:1;transition:opacity .5s ease .5s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+
+/* 矩阵计算器 */
+.matrix{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.matrix h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.matrix .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch;margin-bottom:16px}
+.m-grid{display:grid;grid-template-columns:1fr repeat(3,minmax(0,1fr)) 1.2fr;gap:8px;align-items:center;margin-bottom:10px}
+.m-grid .cell{background:rgba(251,248,241,.06);border-radius:8px;padding:8px 10px;font-size:.9rem;text-align:center}
+.m-grid .cell.name{background:none;text-align:left;padding-left:4px;font-weight:600}
+.m-grid .cell.h{background:rgba(192,138,45,.14);font-weight:700;font-size:.86rem}
+.m-grid input{width:100%;min-width:0;background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);color:var(--white);border-radius:6px;padding:7px 6px;font-family:var(--sans);font-size:1rem;text-align:center}
+.m-grid input:focus{outline:none;border-color:var(--gold)}
+.m-grid .total{font-family:var(--serif);font-weight:700;font-size:1.05rem;color:var(--gold)}
+.m-grid .row-best{background:rgba(192,138,45,.2);border:1px solid rgba(192,138,45,.5)}
+.m-rank{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.m-rank-item{display:flex;align-items:center;gap:12px;font-size:.92rem}
+.m-rank-item .nm{min-width:120px;color:rgba(251,248,241,.85)}
+.m-rank-item .bar{flex:1;height:10px;border-radius:6px;background:rgba(251,248,241,.12);overflow:hidden}
+.m-rank-item .fill{height:100%;border-radius:6px;background:var(--gold);transition:width .3s ease}
+.m-rank-item.best .fill{background:var(--teal)}
+.m-rank-item.best .nm{color:var(--gold);font-weight:700}
+.m-note{font-size:.9rem;color:rgba(251,248,241,.7);margin-top:12px;min-height:22px}
+.m-btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.m-btn{background:transparent;border:1.5px solid rgba(192,138,45,.7);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:.88rem;padding:8px 16px;border-radius:8px;cursor:pointer;transition:background .15s}
+.m-btn:hover{background:rgba(192,138,45,.15)}
+
+/* 对话/自测/复盘复用 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:210px}
+  .funnel{width:86%}
+  .m-grid{grid-template-columns:1.2fr repeat(3,minmax(0,1fr));gap:6px}
+  .m-grid .total{grid-column:2 / -1;text-align:right;padding-right:4px}
+  .m-rank-item .nm{min-width:92px}
+  .matrix{padding:22px 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .bub{opacity:1}
+  .bub-A,.bub-B,.bub-D{display:none}
+  .bub-C{transform:translateY(196px)}
+  .pick{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.btn,.m-btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="funnel">
+      <svg class="funnel-svg" viewBox="0 0 330 208" fill="none" preserveAspectRatio="none">
+        <path d="M42 14 h246 l-70 184 h-106 z" fill="rgba(192,138,45,.06)" stroke="rgba(192,138,45,.55)" stroke-width="2"/>
+        <line x1="165" y1="60" x2="165" y2="150" stroke="rgba(251,248,241,.18)" stroke-width="1.5" stroke-dasharray="4 5"/>
+      </svg>
+    </div>
+    <div class="bub bub-A">A</div>
+    <div class="bub bub-B">B</div>
+    <div class="bub bub-C">C</div>
+    <div class="bub bub-D">D</div>
+    <div class="gate"></div>
+    <div class="pick">选 它</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 干 活 篇 第 1 课</div>
+    <h1>决策<span class="accent">怎么定</span></h1>
+    <div class="hero-sub">分析完了还是不敢定？这节课给你一套<br class="br">算得清、能执行、错了能退的决策法。</div>
+    <div class="hero-meta">定目标 · 列选项 · 分信息 · 做判断 · 设止损</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 为什么你不敢定 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">为什么你不敢定</h2>
+    <span class="sec-sub">不是胆子小，是三个坑</span>
+  </div>
+  <p class="lead">想很久、下不了决心，通常不是信息少，而是撞上这三件事之一：<b class="strong">信息永远不全、怕选错、完美主义</b>。点开看看你卡在哪一个。</p>
+
+  <div class="cards" id="stuckCards">
+    <div class="card"><h4>① 信息永远不全</h4><div class="why">等你把信息收集全，机会也过去了。真正的决策从来都是"信息不全时做判断"。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>分清哪些信息真的会影响选择。只补关键那一条，够用就定，剩下的靠止损兜底。</div></div>
+    <div class="card"><h4>② 怕选错</h4><div class="why">怕背锅、怕后悔，于是拖着不定——拖着本身也是一种选择，而且通常是最差的那种。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>先定义"错了怎么办"。有退出路径，选错的代价就被封顶了。</div></div>
+    <div class="card"><h4>③ 完美主义</h4><div class="why">非要等一个"最优解"。可现实中大多数选择没有最优，只有"够好"。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>用"够好就停"原则：定一个及格线，过了就选，把省下的时间花在执行上。</div></div>
+    <div class="card"><h4>④ 直觉失灵</h4><div class="why">上一课聊过：压力大时直觉会掉线，越重要越不敢拍板。直觉只是起点，不是裁判。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>直觉用来出"候选答案"，用后面的五步法来验收它。</div></div>
+  </div>
+
+  <div class="callout"><p><b>结论：</b>你缺的不是勇气，是一个"定了就安心"的流程。流程会替你兜底，勇气自然就有了。</p></div>
+</section>
+
+<!-- ===== 视图：02 好决策的标准 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">好决策的标准：质量 ≠ 结果</h2>
+    <span class="sec-sub">用过程评价自己，别用结果审判自己</span>
+  </div>
+  <p class="lead">大多数人的误区：用"事后结果对不对"评价一个决定。结果好坏里有大量运气成分——<b class="strong">用结果评价决策，等于用开奖评价下注</b>。</p>
+  <p>好决策有更可靠的标准，三个都满足就算：</p>
+  <div class="steps" id="stdSteps">
+    <div class="step"><div class="step-head"><span class="step-no">1</span><span class="step-title">选前算得清<small>标准、权重、候选都是明摆着的，不是凭感觉</small></span><span class="step-arrow">›</span></div><div class="step-body"><p>哪怕只用五分钟，也要把"我在比什么、哪个更重要"写出来。写得清，才谈得上"选"。写不清，说明你还没准备好做决定。</p></div></div>
+    <div class="step"><div class="step-head"><span class="step-no">2</span><span class="step-title">选后能执行<small>这个决定拆得出下一步动作，而不是停在"我决定……"</small></span><span class="step-arrow">›</span></div><div class="step-body"><p>好决定自带行动计划：谁、做什么、什么时候。定完说不出"明天先做哪一件事"，这个决定就还只是愿望。</p></div></div>
+    <div class="step"><div class="step-head"><span class="step-no">3</span><span class="step-title">错了能退出<small>事先想好止损点，选错的代价被封顶</small></span><span class="step-arrow">›</span></div><div class="step-body"><p>任何决定前先问一句："如果错了，我什么时候、怎么退出？"有退路，你才敢真正往前走。没有退路的决定，多半是赌博。</p></div></div>
+  </div>
+  <div class="callout teal"><p><b>一句话：</b>好决策 = 算得清 + 能执行 + 能退出。三个都过，就算结果不好，你也没做错。</p></div>
+</section>
+
+<!-- ===== 视图：03 五步决策法 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">五步决策法</h2>
+    <span class="sec-sub">定目标 → 列选项 → 分信息 → 做判断 → 设止损</span>
+  </div>
+  <p class="lead">这套流程专治"想很久不敢定"：每一步都有明确出口，走完就是一张能拍的板。</p>
+
+  <div class="steps" id="decSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">定目标<small>先回答"我到底要什么"，一句写下来</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>目标不清，选项就没有可比性。<b>写下一句话目标</b>，例如"三个月内把项目风险降到可控范围"。目标里带上时间与衡量方式，别写"我要更好"这种空话。</p>
+        <div class="eg"><b>例：</b>不是"选个数据库"，而是"半年内稳定支撑 100 万用户、运维成本不超预算"。后者的选项会自己冒出来。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">列选项<small>至少列 2-3 个，哪怕是"什么都不做"</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>只有一个选项不叫决策，叫服从。强迫自己写出至少三个：A 方案、B 方案、C 什么都不做（它永远是合法选项，用来当基准线）。</p>
+        <div class="eg"><b>例：</b>买现成的 / 自己开发 / 再观望三个月。把"观望"也列上，你就看清了它的真实代价。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">分信息<small>哪些信息真的会影响选择？只补关键的一条</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>把"想知道的"和"会影响选择的"分开。后者才是关键信息。缺关键信息就去查，缺非关键信息就直接跳过。<b>信息收集以"能拍板"为终点，不是"知道所有细节"。</b></p>
+        <div class="eg"><b>例：</b>租不租这套房，关键信息是通勤时间和预算；空调新旧不关键。别再为不关键的事拖一周。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">做判断<small>用工具把"感觉"变成"算得清"（下一节有计算器）</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>先写下直觉答案（它常是对的），再用判断工具验收。工具的意义不是推翻直觉，而是逼你把标准摆到桌面上，防止"哪个标准重要"由情绪说了算。</p>
+        <div class="eg"><b>例：</b>直觉选 A，矩阵一算 B 更优。不是 A 不好，是你之前没把"风险可控"的权重放进去。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">5</span><span class="step-title">设止损<small>定之前先定"错了怎么退"，再拍板</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>写下一个可观察的止损点：<b>什么信号出现 = 错了，到什么时间 = 必须退出</b>。有止损点的决定叫决策，没有的叫赌博。</p>
+        <div class="eg"><b>例：</b>"先试一个月：如果新增用户没到 500，就退回原方案。"——这句话值回整个决策过程。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>口诀：</b>目标-选项-信息-判断-止损。卡在哪一步，就回哪一步；卡太久，多半是上一步没走完。</p></div>
+</section>
+
+<!-- ===== 视图：04 决策矩阵计算器 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">决策矩阵计算器</h2>
+    <span class="sec-sub">把"都重要"变成"哪个更重要"</span>
+  </div>
+  <p class="lead">三个选项 × 三个标准。给每个标准定<b class="strong">权重</b>（1-10，越大越重要），再给每个选项逐项打分（1-10），系统自动算总分排序。改任何一格，结果立刻变。</p>
+  <p>默认是一道真实场景：自主开发、买现成、外包。你可以改成自己正在纠结的事。</p>
+
+  <div class="matrix" id="matrix">
+    <h3>算一算：哪个选项更值得选</h3>
+    <p class="desc">权重表示这个标准对你有多重要；分数表示该选项在这条标准上表现多好（1 最差，10 最好）。总分 = Σ(权重×分数) ÷ Σ权重。</p>
+    <div class="m-grid">
+      <div class="cell name h">选项 \\ 标准</div>
+      <div class="cell h">标准1<input type="number" id="w1" min="1" max="10" value="7" aria-label="标准1权重"></div>
+      <div class="cell h">标准2<input type="number" id="w2" min="1" max="10" value="6" aria-label="标准2权重"></div>
+      <div class="cell h">标准3<input type="number" id="w3" min="1" max="10" value="8" aria-label="标准3权重"></div>
+      <div class="cell name h">权重</div>
+    </div>
+    <div class="m-grid" data-opt="0">
+      <div class="cell name"><input type="text" id="name0" value="自主开发" aria-label="选项A名称"></div>
+      <div class="cell"><input type="number" id="s0-1" min="1" max="10" value="6" aria-label="选项A标准1"></div>
+      <div class="cell"><input type="number" id="s0-2" min="1" max="10" value="8" aria-label="选项A标准2"></div>
+      <div class="cell"><input type="number" id="s0-3" min="1" max="10" value="7" aria-label="选项A标准3"></div>
+      <div class="cell total" id="total0">—</div>
+    </div>
+    <div class="m-grid" data-opt="1">
+      <div class="cell name"><input type="text" id="name1" value="买现成" aria-label="选项B名称"></div>
+      <div class="cell"><input type="number" id="s1-1" min="1" max="10" value="8" aria-label="选项B标准1"></div>
+      <div class="cell"><input type="number" id="s1-2" min="1" max="10" value="9" aria-label="选项B标准2"></div>
+      <div class="cell"><input type="number" id="s1-3" min="1" max="10" value="5" aria-label="选项B标准3"></div>
+      <div class="cell total" id="total1">—</div>
+    </div>
+    <div class="m-grid" data-opt="2">
+      <div class="cell name"><input type="text" id="name2" value="外包" aria-label="选项C名称"></div>
+      <div class="cell"><input type="number" id="s2-1" min="1" max="10" value="7" aria-label="选项C标准1"></div>
+      <div class="cell"><input type="number" id="s2-2" min="1" max="10" value="7" aria-label="选项C标准2"></div>
+      <div class="cell"><input type="number" id="s2-3" min="1" max="10" value="6" aria-label="选项C标准3"></div>
+      <div class="cell total" id="total2">—</div>
+    </div>
+    <div class="m-rank" id="mRank"></div>
+    <div class="m-note" id="mNote">改改权重或分数，看排名怎么变。</div>
+    <div class="m-btn-row">
+      <button class="m-btn" id="btnReset">恢复默认示例</button>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b>提醒：</b>矩阵给的是"哪条标准赢了"，不是"唯一的答案"。算完还要过三关——能执行吗？能退出吗？止损点是什么？</p></div>
+</section>
+
+<!-- ===== 视图：05 四个决策坑 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">四个常见的坑</h2>
+    <span class="sec-sub">踩过的都认识，认识的就绕得开</span>
+  </div>
+  <div class="cards" id="trapCards">
+    <div class="card"><h4>锚定</h4><div class="why">第一个看到的数字/方案会偷偷拉高你的参照系：先看到 8 万，就觉得 5 万便宜。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>先定自己的预算和标准，再看外部报价。参照系由你定，不由别人定。</div></div>
+    <div class="card"><h4>沉没成本</h4><div class="why">"都投了三个月了，现在放弃太亏"——收不回的钱和时间，不该成为继续的理由。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>问"从现在开始，哪个选项最好"，而不是"我已经付出了多少"。过去的事算不清，未来的账才算得清。</div></div>
+    <div class="card"><h4>无限等待</h4><div class="why">"再等等，说不定有更好的"——等待的代价（时间、机会）往往比选错更大。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>给等待一个截止日。到点没等到更好的，就按现有选项定，别让"可能"永远赢过"现有"。</div></div>
+    <div class="card"><h4>过度自信</h4><div class="why">越熟越容易拍板太早，漏掉反证——尤其在你最有经验的那个领域。</div><p class="hint">点开看破解</p><div class="fix"><b>破解：</b>强制问一句"如果我是错的，会是因为什么？"答不上来，就再找个人挑刺。</div></div>
+  </div>
+</section>
+
+<!-- ===== 视图：06 自测 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 好决策的三个检验标准是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">事后看结果对不对</button>
+        <button class="q-opt" data-ok="1">选前算得清、选后能执行、错了能退出</button>
+        <button class="q-opt" data-ok="0">所有人都同意</button>
+      </div>
+      <div class="q-feedback">结果里一半是运气。算得清 + 能执行 + 能退出，才是你能掌控的那一半。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 信息永远收集不全，怎么办？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">等收集全了再定</button>
+        <button class="q-opt" data-ok="1">只补真会影响选择的关键信息，够用就定，用止损点兜底</button>
+        <button class="q-opt" data-ok="0">抛硬币</button>
+      </div>
+      <div class="q-feedback">决策的本质就是"信息不全时做判断"。关键一条补齐即可，剩下的交给止损。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 五步决策法的第一步是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">列选项</button>
+        <button class="q-opt" data-ok="1">定目标</button>
+        <button class="q-opt" data-ok="0">做判断</button>
+      </div>
+      <div class="q-feedback">先定目标，选项才有可比性。目标里最好带上时间和衡量方式。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 沉没成本陷阱说的是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">已经收不回的钱和时间，不该成为继续投入的理由</button>
+        <button class="q-opt" data-ok="0">投入越多越该继续</button>
+        <button class="q-opt" data-ok="0">成本越低越该选</button>
+      </div>
+      <div class="q-feedback">问"从现在开始哪个最好"，别问"我已经付出了多少"。过去的账算不清。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 决策矩阵里"权重"的作用是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">让每条标准的重要性可比较，防止"都重要"变成拍脑袋</button>
+        <button class="q-opt" data-ok="0">让分数更高</button>
+        <button class="q-opt" data-ok="0">装饰用</button>
+      </div>
+      <div class="q-feedback">"都重要"等于没标准。权重把"哪个更重要"逼到明面上，这就是矩阵的价值。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：07 作业与复盘 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">作业：定一件真的</h2>
+    <span class="sec-sub">矩阵用在自己身上，才算学会</span>
+  </div>
+  <p class="lead">这周挑一件真实待决定的事（哪怕很小：买什么、跟谁合作、先做哪块）。用上面那个计算器算一遍，再填复盘。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>要决定的事</th><td>一句话目标是什么？</td></tr>
+    <tr><th>候选选项</th><td>至少 2 个，含"什么都不做"</td></tr>
+    <tr><th>关键标准与权重</th><td>哪 2-3 条标准，各几分权重？</td></tr>
+    <tr><th>我的第一直觉</th><td>直觉选了谁？</td></tr>
+    <tr><th>矩阵结果</th><td>算出来选了谁？和直觉一致吗？</td></tr>
+    <tr><th>止损点</th><td>什么信号出现 = 错了，必须退出？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题填，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 10 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课 + 干活篇第 1 课<br>
+  下一课预告：行动——把决定变成下一步。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01/05 卡片 ===== */
+  document.querySelectorAll('#stuckCards .card, #trapCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02 标准折叠 ===== */
+  document.querySelectorAll('#stdSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#stdSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 03 五步法折叠 ===== */
+  document.querySelectorAll('#decSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#decSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 04 决策矩阵 ===== */
+  var ids = {
+    w: ['w1','w2','w3'],
+    name: ['name0','name1','name2'],
+    scores: [['s0-1','s0-2','s0-3'],['s1-1','s1-2','s1-3'],['s2-1','s2-2','s2-3']],
+    total: ['total0','total1','total2']
+  };
+  var mRank = document.getElementById('mRank');
+  var mNote = document.getElementById('mNote');
+  function num(id){ var v = parseFloat(document.getElementById(id).value); if (isNaN(v)) v = 0; return Math.max(0, Math.min(10, v)); }
+  function compute(){
+    var ws = ids.w.map(function(id){ return num(id); });
+    var wsSum = ws.reduce(function(a,b){ return a + b; }, 0);
+    var totals = [], names = ids.name.map(function(id){ return document.getElementById(id).value.trim() || '选项'; });
+    for (var i = 0; i < 3; i++) {
+      var s = ids.scores[i].map(function(id){ return num(id); });
+      var t = 0;
+      for (var j = 0; j < 3; j++) t += ws[j] * s[j];
+      totals.push(wsSum > 0 ? t / wsSum : 0);
+    }
+    ids.total.forEach(function(id, i){ document.getElementById(id).textContent = totals[i].toFixed(2); });
+    var order = [0,1,2].sort(function(a,b){ return totals[b] - totals[a]; });
+    var best = order[0];
+    var max = Math.max.apply(null, totals);
+    document.querySelectorAll('.m-grid[data-opt]').forEach(function(g){
+      g.classList.remove('row-best');
+    });
+    var bestGrid = document.querySelector('.m-grid[data-opt="' + best + '"]');
+    if (bestGrid) bestGrid.classList.add('row-best');
+    var html = '';
+    order.forEach(function(i){
+      html += '<div class="m-rank-item' + (i === best ? ' best' : '') + '"><span class="nm">' + names[i] + '</span><div class="bar"><div class="fill" style="width:' + Math.round(totals[i] / max * 100) + '%"></div></div><span style="min-width:52px;text-align:right">' + totals[i].toFixed(2) + '</span></div>';
+    });
+    mRank.innerHTML = html;
+    mNote.textContent = '当前最优：' + names[best] + '。算完别忘了过三关：能执行吗？能退出吗？止损点是什么？';
+  }
+  document.querySelectorAll('#matrix input').forEach(function(inp){
+    inp.addEventListener('input', compute);
+  });
+  document.getElementById('btnReset').addEventListener('click', function(){
+    var defs = { w1:7, w2:6, w3:8, 's0-1':6, 's0-2':8, 's0-3':7, 's1-1':8, 's1-2':9, 's1-3':5, 's2-1':7, 's2-2':7, 's2-3':6 };
+    for (var k in defs) document.getElementById(k).value = defs[k];
+    document.getElementById('name0').value = '自主开发';
+    document.getElementById('name1').value = '买现成';
+    document.getElementById('name2').value = '外包';
+    compute();
+  });
+  compute();
+
+  /* ===== 06 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去定一件真的吧。' : ' —— 回去看 02、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 07 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【决策复盘】'];
+    var keys = ['要决定的事','候选选项','关键标准与权重','我的第一直觉','矩阵结果','止损点'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

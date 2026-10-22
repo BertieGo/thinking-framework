@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第7课 非暴力沟通：好好说话，不伤情面</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M8 11h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-7l-4 3v-3H8a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z' fill='%23C08A2D'/%3E%3Ccircle cx='12' cy='16' r='1.4' fill='%23141B2E'/%3E%3Ccircle cx='16' cy='16' r='1.4' fill='%23141B2E'/%3E%3Ccircle cx='20' cy='16' r='1.4' fill='%23141B2E'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.6rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.35rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:22px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 四要素链路舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:200px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.chain{position:absolute;left:2%;right:2%;top:58px;height:52px}
+.chain-line{position:absolute;left:6%;right:6%;top:50%;height:2px;background:rgba(251,248,241,.14)}
+.chain-fill{position:absolute;left:6%;right:6%;top:50%;height:2px;background:linear-gradient(90deg,#7FB8A5,#E8A08F,#C08A2D,#FBF8F1);transform:scaleX(0);transform-origin:left}
+.cnode{position:absolute;top:50%;transform:translate(-50%,-50%);width:66px;height:36px;border:1.5px solid var(--cc);border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:15px;letter-spacing:.1em;color:var(--cc);opacity:.28}
+.cnode.c1{left:12%}.cnode.c2{left:38.7%}.cnode.c3{left:65.3%}.cnode.c4{left:92%}
+.stage.play .cnode{animation:nodeOn .5s ease forwards}
+.stage.play .c1{animation-delay:.1s}
+.stage.play .c2{animation-delay:.45s}
+.stage.play .c3{animation-delay:.8s}
+.stage.play .c4{animation-delay:1.15s}
+@keyframes nodeOn{0%{opacity:.28}100%{opacity:1;background:rgba(251,248,241,.08);box-shadow:0 0 14px rgba(251,248,241,.18)}}
+.stage.done .chain-fill{animation:fillX 1.1s ease .05s forwards}
+@keyframes fillX{to{transform:scaleX(1)}}
+.chain-tag{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:13px;letter-spacing:.5em;color:var(--gold);opacity:0;white-space:nowrap}
+.stage.done .chain-tag{opacity:1;transition:opacity .6s ease .7s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 三态行 */
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.tri-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .18s ease}
+.tri-item:hover{border-color:var(--coral)}
+.tri-item h4{font-family:var(--serif);font-size:1.5rem;font-weight:900;color:var(--ink)}
+.tri-item .sub{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.tri-item .detail{display:none;font-size:.92rem;border-top:1px dashed var(--line);padding-top:10px}
+.tri-item.open{border-color:var(--teal);background:#F0F6F3}
+.tri-item.open .detail{display:block}
+
+/* 暗面板互动 */
+.lab{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.lab h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.lab .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch}
+.eye-say{background:rgba(251,248,241,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 18px;font-family:var(--serif);font-size:1.14rem;line-height:1.7;color:var(--white);min-height:64px;margin:18px 0 12px}
+.eye-opts{display:flex;gap:12px;flex-wrap:wrap}
+.eye-btn{flex:1;min-width:150px;min-height:48px;background:transparent;border:1.5px solid rgba(251,248,241,.3);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.95rem;padding:12px 10px;border-radius:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.eye-btn:hover{border-color:var(--gold)}
+.eye-btn.ok{border-color:#7FB8A5;background:rgba(62,124,111,.35)}
+.eye-btn.no{border-color:#E8A08F;background:rgba(201,79,56,.3)}
+.lab-note{font-size:13px;color:rgba(251,248,241,.7);min-height:22px;margin-top:12px}
+.m-btn{display:none;background:transparent;border:1.5px solid rgba(192,138,45,.7);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:.88rem;padding:9px 18px;border-radius:8px;cursor:pointer;transition:background .15s;min-height:44px;margin-top:12px}
+.m-btn:hover{background:rgba(192,138,45,.15)}
+.m-btn.show{display:inline-block}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+
+/* 对话对照 */
+.dlg-tabs{display:flex;gap:0;margin:22px 0 0;border-bottom:2px solid var(--ink)}
+.dlg-tab{flex:1;text-align:center;padding:12px;font-weight:700;font-size:.98rem;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--sans);border-radius:10px 10px 0 0;min-height:44px}
+.dlg-tab.on{background:var(--ink);color:var(--white)}
+.dlg-pane{display:none;border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:20px 18px}
+.dlg-pane.on{display:block}
+.dlg-line{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.dlg-who{flex:none;width:74px;font-size:.82rem;font-weight:700;padding-top:3px}
+.dlg-who.me{color:var(--coral)}.dlg-who.other{color:var(--teal)}
+.dlg-say{flex:1;min-width:0}
+.dlg-say .txt{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.dlg-say .why{font-size:.8rem;color:var(--gold);margin-top:4px}
+.dlg-bad{background:#F6E6E0;border-left:3px solid var(--coral);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+.dlg-good{background:var(--teal-soft);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.94rem}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s;min-height:44px}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:140px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s;min-height:44px}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .tri{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:180px}
+  .cnode{width:56px;font-size:13px}
+  .dlg-who{width:56px}
+  .lab{padding:22px 16px}
+  .eye-opts{flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .cnode{opacity:1;background:rgba(251,248,241,.08)}
+  .chain-fill{transform:scaleX(1)}
+  .chain-tag{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.tri-item,.step-head,.q-opt,.btn,.eye-btn,.m-btn,.dlg-tab{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="chain">
+      <div class="chain-line"></div>
+      <div class="chain-fill"></div>
+      <div class="cnode c1" style="--cc:#7FB8A5">观察</div>
+      <div class="cnode c2" style="--cc:#E8A08F">感受</div>
+      <div class="cnode c3" style="--cc:#C08A2D">需要</div>
+      <div class="cnode c4" style="--cc:#FBF8F1">请求</div>
+    </div>
+    <div class="chain-tag">好 好 说 话</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 沟 通 篇 第 1 课</div>
+    <h1>非暴力沟通<span class="accent">怎么说</span></h1>
+    <div class="hero-sub">一开口就伤人，一说事就冷战？这节课给你一套<br>说事实、说感受、说需要、提请求的好好说话法。</div>
+    <div class="hero-meta">观察 × 感受 × 需要 × 请求</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 为什么一开口就冷场 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">为什么一开口就冷场</h2>
+    <span class="sec-sub">先认出那些伤人的话</span>
+  </div>
+  <p class="lead">暴力沟通不一定是骂人。它是那种<b class="strong">一出口，对方就想防御</b>的说法——哪怕你说的全是事实。点开看看你中过哪几条。</p>
+  <p>问题出在哪？你以为自己在<b>说一件事</b>，对方听成的是<b>审判一个人</b>。事情还没谈，关系先崩了。</p>
+
+  <div class="cards" id="badCards">
+    <div class="card"><h4>贴标签 · 道德评判</h4><div class="why">"你做事从不靠谱"——你在判决这个人，不是在说这件事。对方听到的不是"这件事要改"，而是"你否定了我这个人"。</div><p class="hint">点开看换成什么</p><div class="fix"><b>换成：</b>"这次周三该交的东西，现在还没交。"——只说这件事。</div></div>
+    <div class="card"><h4>绝对化 · 翻旧账</h4><div class="why">"总是""每次又""从来"——事实被放大成性格判决。一次迟到被说成"永远迟到"，对方当然要反驳。</div><p class="hint">点开看换成什么</p><div class="fix"><b>换成：</b>"这周三次例会，你有两次迟到了。"——次数说准，判决拿掉。</div></div>
+    <div class="card"><h4>比较 · 戳痛处</h4><div class="why">"你看人家小王，从来不用人催"——比较一出口，合作就变成攀比。人是被激励的，不是被比下去的。</div><p class="hint">点开看换成什么</p><div class="fix"><b>换成：</b>把比较对象整个删掉，直接说你要什么结果。</div></div>
+    <div class="card"><h4>命令 · 强人所难</h4><div class="why">"你必须""你能不能上点心"——命令代替请求，对方要么顶回来，要么表面答应、心里记仇。</div><p class="hint">点开看换成什么</p><div class="fix"><b>换成：</b>一个具体的、对方做得到的请求："明天下班前，把卡住的点发我。"</div></div>
+  </div>
+
+  <div class="callout red"><p><b>结论：</b>这四种话的共同点是——<b>把"对事"说成了"对人"</b>。下一节的四要素，就是把话重新拆回"对事"的位置上。</p></div>
+</section>
+
+<!-- ===== 视图：02 四要素总览 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">四要素：好好说话的四个零件</h2>
+    <span class="sec-sub">观察 → 感受 → 需要 → 请求</span>
+  </div>
+  <p class="lead">非暴力沟通看着玄，拆开就是四个零件，按顺序说出口：<b class="strong">观察（说事实）、感受（说自己）、需要（说背后）、请求（说动作）</b>。</p>
+  <p>注意顺序：一上来就提请求，像命令；一上来讲对方错了，像指责。<b>四步走完，对方不防御，事情才动得了。</b></p>
+
+  <div class="steps" id="nvSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">观察：不带评判地说事实<small>只说镜头能拍到的东西</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>事实要<b>可核对、不带形容词</b>。"这周例会迟到两次"是事实；"总是迟到"是判决。判决一出口，对话就变吵架。</p>
+        <div class="eg"><b>例：</b>"你周四提交的版本，在测试环境跑不起来。"——谁看日志都一样，对方没法反驳，只能谈事。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">感受：说自己的感受<small>说情绪，不说对错</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>感受是<b>你自己</b>的，不是对方的罪状。"我有点着急"是感受；"你让我很生气"还是在指责——主语一换成"你"，就又回到了对人。</p>
+        <div class="eg"><b>例：</b>"进度卡着，我有点焦虑。"——对方听到的是你的状态，不是一句骂。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">需要：说出感受背后的需要<small>情绪是信号，需要才是内容</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>每个情绪背后都有一个没被满足的需要。着急，背后是"我需要项目按时上线"；委屈，背后是"我需要被看见"。<b>把需要说出来，对方才知道往哪使劲。</b></p>
+        <div class="eg"><b>例：</b>"我需要提前知道风险，好安排后面的联调。"——这就把"催你"变成了"我们共同的事"。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">请求：提具体可执行的请求<small>说你要什么，别说你不要什么</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>请求要<b>具体、正向、对方做得到</b>。"上点心"没法执行；"每天站会同步三句进展"可以。请求不是命令——对方做不到，可以谈。</p>
+        <div class="eg"><b>例：</b>"明天下班前，把卡住的点发我一下，行吗？"——有动作、有时间、有商量的余地。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>用法：</b>四步不是背台词。卡住了就检查：我这句里有没有评判？我说的是"你的错"还是"我的感受"？请求对方<b>做得到</b>吗？</p></div>
+</section>
+
+<!-- ===== 视图：03 观察 vs 评论 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">观察 ≠ 评论</h2>
+    <span class="sec-sub">镜头拍不到的，都叫评论</span>
+  </div>
+  <p class="lead">观察是<b class="strong">镜头能拍到</b>的东西：时间、次数、记录，谁看都一样。评论是你脑子里的<b>判决</b>：人品、性格、动机。</p>
+  <p>"你总是迟到"拍不到——它是判决；"这周例会你迟到了两次"，谁看签到记录都一样——这是观察。就这一层纸，捅破了，对话质量立刻不一样。</p>
+
+  <div class="lab" id="eyeLab">
+    <h3>试一试：这句话是观察，还是评论？</h3>
+    <p class="desc">点按钮判断。判断完看解释——判断本身不重要，重要的是分清"镜头拍到的"和"你判的"。</p>
+    <div class="eye-say" id="eyeSay">…</div>
+    <div class="eye-opts">
+      <button class="eye-btn" id="btnObs">这是观察</button>
+      <button class="eye-btn" id="btnCmt">这是评论</button>
+    </div>
+    <div class="lab-note" id="eyeNote">先读句子，再下判断。</div>
+    <button class="m-btn" id="eyeNext">下一句 ›</button>
+  </div>
+
+  <div class="callout teal"><p><b>一句话：</b>把"你这个人怎么样"换成"我看到了什么"。对方没法反驳一个事实，但随时能反驳一个判决。</p></div>
+</section>
+
+<!-- ===== 视图：04 对照一 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">说需要 ≠ 指责</h2>
+    <span class="sec-sub">同一件事，两种说法（一）</span>
+  </div>
+  <p class="lead">场景：队友负责的模块快到联调日，你一直没收到进度更新。左边是本能版，右边是四要素版。</p>
+
+  <div class="dlg-tabs">
+    <button class="dlg-tab on" data-pane="paneBad1">指责版 · 越谈越僵</button>
+    <button class="dlg-tab" data-pane="paneGood1">非暴力版 · 事情落地</button>
+  </div>
+
+  <div class="dlg-pane on" id="paneBad1">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"你根本不管项目！这么久一点进度都没有！"</div><div class="why">贴标签 + 全盘否定，对方瞬间进入防御。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">队友</span><div class="dlg-say"><div class="txt">"我天天在写，谁问过我？"</div><div class="why">开始反击，话题从进度变成"你冤枉我"。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"那别人怎么都能按时同步？"</div><div class="why">比较 + 升级，对话彻底跑偏。</div></div></div>
+    <div class="dlg-bad">结果：吵完，进度还是黑盒，关系还僵了——下次他更不告诉你。</div>
+  </div>
+
+  <div class="dlg-pane" id="paneGood1">
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"这周三次站会，我都没听到你的进展。"（数字仅为示意）</div><div class="why">观察：只说事实，不贴"不管项目"的标签。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"我有点着急——联调就快到了。"</div><div class="why">感受：说自己的状态，不指责对方。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"我需要提前知道风险，好安排后面的联调。"</div><div class="why">需要：讲清楚你为什么问，这是共同的事。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"能不能每天站会，用三句话同步一下进展？卡住的地方直接说。"</div><div class="why">请求：具体、可执行、留商量余地。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">队友</span><div class="dlg-say"><div class="txt">"行，我今天就把进度理一下，环境还卡着我一并说。"</div><div class="why">对方没有防御，还把隐藏的风险主动说了出来。</div></div></div>
+    <div class="dlg-good">结果：进度透明了，风险提前暴露，联调才真的排得出来。</div>
+  </div>
+</section>
+
+<!-- ===== 视图：05 倾听 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">倾听：先接住，再回应</h2>
+    <span class="sec-sub">被听懂的人，才听得进你</span>
+  </div>
+  <p class="lead">非暴力沟通不只是"好好说"，还有一半是"好好听"。<b class="strong">对方带着情绪开口时，他要的不是解决方案，是被听懂</b>。</p>
+  <p>顺序别反：你先把道理摆出来，他一个字都听不进去。你先接住他的情绪，他自己会冷静下来听你。</p>
+
+  <div class="tri" id="triListen">
+    <div class="tri-item"><h4>停</h4><div class="sub">Stop · 先别辩解</div><div class="detail">对方带着火开口时，你的第一反应是反驳。忍住，先闭嘴三秒。你一辩，他就更火。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看做法</p></div>
+    <div class="tri-item"><h4>接</h4><div class="sub">Mirror · 说出他的感受和需要</div><div class="detail">把他没说出口的那句说出来："听起来你很挫败，是因为这个方案改来改去对吗？"——说中了，他就松了一半。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看做法</p></div>
+    <div class="tri-item"><h4>确认</h4><div class="sub">Check · 问一句再开口</div><div class="detail">问"是这个意思吗？"他点头了，你再说你的观察、需要和请求。顺序错了，前面全白费。</div><p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">点开看做法</p></div>
+  </div>
+
+  <div class="callout teal"><p><b>提醒：</b>倾听不是沉默地挨骂，是<b>主动把对方的感受和需要说出来</b>。说中了，他要的情绪出口就有了。</p></div>
+</section>
+
+<!-- ===== 视图：06 对照二 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">换个场景再走一遍</h2>
+    <span class="sec-sub">同一件事，两种说法（二）</span>
+  </div>
+  <p class="lead">场景：最近项目冲刺，你连续晚归。家人有情绪了。同一个冲突，两种谈法。</p>
+
+  <div class="dlg-tabs">
+    <button class="dlg-tab on" data-pane="paneBad2">指责版 · 越吵越远</button>
+    <button class="dlg-tab" data-pane="paneGood2">非暴力版 · 互相都安心</button>
+  </div>
+
+  <div class="dlg-pane on" id="paneBad2">
+    <div class="dlg-line"><span class="dlg-who other">家人</span><div class="dlg-say"><div class="txt">"你还知道回来？这个家你根本不管！"</div><div class="why">带着情绪的指责，你听了先炸。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"我天天加班还不是为了这个家？你能不能别无理取闹？"</div><div class="why">"无理取闹"四个字一出，事情变成站队。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">家人</span><div class="dlg-say"><div class="txt">"行，那你跟项目过去吧。"</div><div class="why">门关了，问题一个没解决。</div></div></div>
+    <div class="dlg-bad">结果：事没说清，气倒是都生了——他觉得被冷落，你觉得不被理解。</div>
+  </div>
+
+  <div class="dlg-pane" id="paneGood2">
+    <div class="dlg-line"><span class="dlg-who other">家人</span><div class="dlg-say"><div class="txt">"你还知道回来？这个家你根本不管！"</div><div class="why">先别接这句指责——他真正想说的是"你好久没陪我们了"。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"这周到周三，我有三天十点以后才到家。我知道你等我吃饭，我挺愧疚的。"</div><div class="why">观察 + 感受：先接住他的情绪，承认自己缺位。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"这段时间项目冲刺，我需要把手头上这版先上线，大概再忙两周。"</div><div class="why">需要：说清你在忙什么、忙到什么时候。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who me">你</span><div class="dlg-say"><div class="txt">"周末我早点回家，咱们一起吃顿好的，行吗？"</div><div class="why">请求：给一个具体的盼头，不是一句"以后再说"。</div></div></div>
+    <div class="dlg-line"><span class="dlg-who other">家人</span><div class="dlg-say"><div class="txt">"那你说话算话，周末别又临时开会。"</div><div class="why">情绪落地，变成一个可以执行的约定。</div></div></div>
+    <div class="dlg-good">结果：家人知道了你在忙什么，也等到了一个具体的盼头——冷战解除。</div>
+  </div>
+
+  <div class="callout"><p><span class="mnem">口诀</span><b>观察只说事实，感受说自己，需要讲清楚，请求下动作；先接对方情绪，再谈你要什么。</b></p></div>
+</section>
+
+<!-- ===== 视图：07 自测 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 非暴力沟通的四要素，正确顺序是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">请求 → 感受 → 观察 → 需要</button>
+        <button class="q-opt" data-ok="1">观察 → 感受 → 需要 → 请求</button>
+        <button class="q-opt" data-ok="0">感受 → 指责 → 请求 → 道歉</button>
+      </div>
+      <div class="q-feedback">先摆事实（观察），再说自己的状态（感受），讲清背后的需要，最后落到具体请求。顺序反了就不像好好说话。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 下面哪一句是"观察"？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">"你总是迟到，一点时间观念都没有。"</button>
+        <button class="q-opt" data-ok="1">"这周例会，你迟到了两次。"</button>
+        <button class="q-opt" data-ok="0">"你对会议根本不尊重。"</button>
+      </div>
+      <div class="q-feedback">"总是""时间观念""不尊重"都是判决。只有"迟到两次"是镜头拍得到、谁看记录都一样的事实。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. "我需要你每周同步一次进度"这句话，在表达什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">我在指责你工作不主动</button>
+        <button class="q-opt" data-ok="1">我在说我的需要——让项目风险提前可见</button>
+        <button class="q-opt" data-ok="0">我在下命令，必须服从</button>
+      </div>
+      <div class="q-feedback">主语是"我需要"，说的是背后的需要，不是对方的错。对方听到的是"我们共同的目标"，不是审判。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 对方劈头盖脸抱怨你时，第一步该做什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">马上反驳，不能让他冤枉我</button>
+        <button class="q-opt" data-ok="1">先接住他的感受和需要，确认听懂了再开口</button>
+        <button class="q-opt" data-ok="0">沉默冷战，等他自己消气</button>
+      </div>
+      <div class="q-feedback">被听懂的人才听得进你。先"停"三秒，再把他的感受说出来，他点头了，你再说事实。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 下面哪个请求是合格的？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">"你以后能不能上点心？"</button>
+        <button class="q-opt" data-ok="0">"你以后不许再拖了。"</button>
+        <button class="q-opt" data-ok="1">"明天下班前，把卡住的点发我一下。"</button>
+      </div>
+      <div class="q-feedback">好请求要具体、可执行、正向：有动作、有时间、对方做得到。"上点心"做不到，"不许拖"是否定句，都不合格。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：08 作业与复盘 ===== -->
+<section id="s8">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <h2 class="sec-title">作业：改写一句话</h2>
+    <span class="sec-sub">这周挑一场真实对话，改写它</span>
+  </div>
+  <p class="lead">不用挑大场面。就挑这周你<b>本能想说"你怎么又……"的那一句</b>，用四要素把它改写成非暴力版，真的说一次。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>对话场景</th><td>这周哪场对话？和谁？</td></tr>
+    <tr><th>指责版原话</th><td>我本能想说的那句是什么？</td></tr>
+    <tr><th>观察（事实）</th><td>镜头拍得到的事实是什么？</td></tr>
+    <tr><th>感受（自己）</th><td>我真正的感受是？</td></tr>
+    <tr><th>需要（背后）</th><td>这件事背后我需要什么？</td></tr>
+    <tr><th>请求（动作）</th><td>我提的具体请求是什么？</td></tr>
+    <tr><th>对方反应</th><td>真说出口后，对方什么反应？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的顺序，一行一项填在这里，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 7 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课（非暴力沟通 · 金字塔表达 · 关键对话）<br>
+  下一课预告：第8课·金字塔表达——结论先行，以上统下。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 伤人的话卡片 ===== */
+  document.querySelectorAll('#badCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 02 四要素折叠 ===== */
+  document.querySelectorAll('#nvSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#nvSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 03 火眼金睛：观察 vs 评论 ===== */
+  var EYES = [
+    { t:'“这周例会，你迟到了两次。”', obs:true, why:'迟到几次，看签到记录谁都一样——这是观察。把“总是”换成“这周两次”，事实就站住了。' },
+    { t:'“你总是迟到，一点时间观念都没有。”', obs:false, why:'“总是”“时间观念”是判决，不是事实。你拍不到“总是”，只能拍到某几次。' },
+    { t:'“这个方案，这周已经改了三版，还没定下来。”', obs:true, why:'三版是看得见的版本记录。只要没加上“你怎么这么磨叽”，它就还是观察。' },
+    { t:'“你做需求，从来不考虑开发工作量。”', obs:false, why:'“从来不”是全盘否定，带着人品判决。对方一听就想辩解，后面的事一个字都听不进去。' }
+  ];
+  var eyeSay = document.getElementById('eyeSay');
+  var eyeNote = document.getElementById('eyeNote');
+  var btnObs = document.getElementById('btnObs');
+  var btnCmt = document.getElementById('btnCmt');
+  var eyeNext = document.getElementById('eyeNext');
+  var ei = 0, answered = false;
+  function renderEye(){
+    var e = EYES[ei];
+    eyeSay.textContent = e.t;
+    eyeNote.textContent = '第 ' + (ei+1) + ' / ' + EYES.length + ' 句。';
+    btnObs.disabled = false; btnCmt.disabled = false;
+    btnObs.classList.remove('ok','no'); btnCmt.classList.remove('ok','no');
+    eyeNext.classList.remove('show');
+    answered = false;
+  }
+  function judge(isObs){
+    if (answered) return;
+    answered = true;
+    var e = EYES[ei];
+    var rightBtn = isObs === e.obs ? (e.obs ? btnObs : btnCmt) : (e.obs ? btnObs : btnCmt);
+    var picked = isObs ? btnObs : btnCmt;
+    if (isObs === e.obs) {
+      picked.classList.add('ok');
+      eyeNote.innerHTML = '判断对了。' + e.why;
+    } else {
+      picked.classList.add('no');
+      rightBtn.classList.add('ok');
+      eyeNote.innerHTML = '再想想。' + e.why;
+    }
+    btnObs.disabled = true; btnCmt.disabled = true;
+    if (ei === EYES.length - 1) {
+      eyeNext.textContent = '完成，回到正文 ›';
+    } else {
+      eyeNext.textContent = '下一句 ›';
+    }
+    eyeNext.classList.add('show');
+  }
+  btnObs.addEventListener('click', function(){ judge(true); });
+  btnCmt.addEventListener('click', function(){ judge(false); });
+  eyeNext.addEventListener('click', function(){
+    if (ei < EYES.length - 1) { ei += 1; renderEye(); }
+    else { eyeNote.textContent = '四句全做完了。分清观察和评论，你已经超过大多数人了。继续往下看对照案例。'; eyeNext.classList.remove('show'); }
+  });
+  renderEye();
+
+  /* ===== 05 倾听三态卡 ===== */
+  document.querySelectorAll('#triListen .tri-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      document.querySelectorAll('#triListen .tri-item').forEach(function(x){ x.classList.remove('open'); });
+      item.classList.add('open');
+    });
+  });
+
+  /* ===== 04/06 对话对照（通用） ===== */
+  document.querySelectorAll('.dlg-tabs').forEach(function(tabs){
+    tabs.querySelectorAll('.dlg-tab').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var which = btn.getAttribute('data-pane');
+        tabs.querySelectorAll('.dlg-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        var holder = tabs.parentElement;
+        holder.querySelectorAll('.dlg-pane').forEach(function(p){ p.classList.toggle('on', p.id === which); });
+      });
+    });
+  });
+
+  /* ===== 07 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去改写一句真的吧。' : ' —— 回去看 02、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 08 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【非暴力沟通复盘】'];
+    var keys = ['对话场景','指责版原话','观察（事实）','感受（自己）','需要（背后）','请求（动作）','对方反应'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

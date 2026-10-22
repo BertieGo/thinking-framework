@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第1课 双系统思维：什么时候该慢下来</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Ccircle cx='11' cy='16' r='6' fill='%23C94F38'/%3E%3Ccircle cx='22' cy='16' r='6' fill='%233E7C6F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 抢答舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);height:250px;margin-top:30px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.stim{position:absolute;top:4px;left:50%;transform:translateX(-50%);background:rgba(251,248,241,.1);border:1.5px solid rgba(251,248,241,.35);border-radius:20px;padding:6px 16px;font-size:13px;letter-spacing:.12em;color:rgba(251,248,241,.9);white-space:nowrap;opacity:0}
+.hero.ready .stim{opacity:1;transition:opacity .6s ease 1s}
+.ans{position:absolute;bottom:52px;width:44%;max-width:220px;border-radius:14px;padding:10px 12px;text-align:center;opacity:0}
+.ans .who{font-size:11px;letter-spacing:.25em;opacity:.85;margin-bottom:2px}
+.ans .say{font-family:var(--serif);font-weight:700;font-size:1.15rem}
+.ans.s1{left:2%;background:rgba(201,79,56,.16);border:1.5px solid var(--coral)}
+.ans.s2{right:2%;background:rgba(62,124,111,.16);border:1.5px solid var(--teal)}
+.stage.play .ans.s1{animation:pop .35s ease-out forwards}
+.stage.play .ans.s2{animation:pop .5s ease-out 1.15s forwards}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.85)}to{opacity:1;transform:none}}
+.mark{display:none;font-family:var(--serif);font-weight:900;font-size:.95rem;margin-top:2px}
+.mark.x{color:#E8A08F}
+.mark.v{color:#7FB8A5}
+.stage.done .ans.s1{opacity:.55;transition:opacity .4s ease}
+.stage.done .ans.s1 .mark.x{display:block;transition:opacity .3s ease .1s}
+.stage.done .ans.s2{box-shadow:0 0 18px rgba(62,124,111,.5);transition:box-shadow .4s ease}
+.stage.done .ans.s2 .mark.v{display:block;transition:opacity .3s ease .35s}
+.caption{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:13px;letter-spacing:.35em;color:var(--gold);white-space:nowrap;opacity:0}
+.stage.done .caption{opacity:1;transition:opacity .6s ease .5s}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;letter-spacing:.06em}
+.tag.y{background:rgba(192,138,45,.16);color:#8A641C}
+.tag.n{background:rgba(90,100,120,.14);color:var(--muted)}
+.tag.h{background:rgba(201,79,56,.14);color:var(--coral)}
+.tag.g{background:rgba(62,124,111,.15);color:var(--teal)}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s;min-height:44px}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .stage{height:230px}
+  .ans{width:46%}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .stim{opacity:1}
+  .ans{opacity:1;animation:none}
+  .ans.s1 .mark.x{display:block}
+  .ans.s2 .mark.v{display:block;box-shadow:0 0 18px rgba(62,124,111,.5)}
+  .caption{opacity:1}
+  .scroll-hint{animation:none}
+  .card,.step-head,.q-opt,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="stim">球拍 + 球 = 1.1 美元</div>
+    <div class="ans s1">
+      <div class="who">系统1 · 抢答</div>
+      <div class="say">10 美分？</div>
+      <div class="mark x">快，但错了</div>
+    </div>
+    <div class="ans s2">
+      <div class="who">系统2 · 慢半拍</div>
+      <div class="say">5 美分</div>
+      <div class="mark v">慢，但对了</div>
+    </div>
+    <div class="caption">该 慢 的 时 候 要 慢</div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 第 1 课</div>
+    <h1>双系统<span class="accent">思维</span></h1>
+    <div class="hero-sub">你的大脑里住着两个员工：一个手快但爱抢跑，<br class="br">一个慢但靠谱。这节课教你什么时候放心用快的。</div>
+    <div class="hero-meta">系统1 × 系统2 × 认知吝啬鬼 × 停三秒</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 两个系统 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">你的脑子里住着两个员工</h2>
+    <span class="sec-sub">一个手快，一个靠谱</span>
+  </div>
+  <p class="lead">卡尼曼在《思考，快与慢》里把大脑分成两套：<b class="strong">系统1 自动快想，系统2 费力慢想</b>。你醒着的每一分钟，都是这两个员工在轮班干活。</p>
+
+  <div class="cards" id="sysCards">
+    <div class="card">
+      <h4><span class="tag h">快</span>系统1：快思考</h4>
+      <p class="hint">点开看它管什么</p>
+      <div class="why">自动、瞬间、不费力。走路、骑车、看到熟人打招呼、1+1、前方有车急刹车——全是它在值班。它靠经验和直觉，一天帮你处理几万个判断，绝大多数又快又对。</div>
+    </div>
+    <div class="card">
+      <h4><span class="tag g">慢</span>系统2：慢思考</h4>
+      <p class="hint">点开看它管什么</p>
+      <div class="why">费力、专注、要动脑。算一笔账、读一份合同、做技术方案、判断一个新合作靠不靠谱——必须请它出来。它慢、耗能高，但结论经得起查。</div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>先别站队：</b>它俩不是"一个好一个坏"，是一个班组的两个班次。问题从来不是"该不该用直觉"，而是<b>这个班次排得对不对</b>。</p></div>
+</section>
+
+<!-- ===== 视图：02 认知吝啬鬼 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">认知吝啬鬼：大脑天生想偷懒</h2>
+    <span class="sec-sub">能不动脑，就不动脑</span>
+  </div>
+  <p class="lead">大脑只占体重的很小一块，耗能却占到全身耗能的约两成。进化于是给它装了个省电模式：<b class="strong">能交给系统1的，绝不麻烦系统2</b>。这就是"认知吝啬鬼"。</p>
+  <p>结果就是：<b>你默认走系统1</b>。熟练的事它干得漂亮，可遇到新问题、复杂问题、代价大的事，它不请假就直接拍板——然后你就为"当时怎么想都没想就……"后悔。</p>
+  <div class="callout red"><p><b>关键后果：</b>越忙、越累、越急，系统1越容易独自上岗。而恰恰这些时候，判断错了代价最大。<b>累的时候，你的第一个反应最不可信。</b></p></div>
+</section>
+
+<!-- ===== 视图：03 什么时候用哪个 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">什么时候用哪个</h2>
+    <span class="sec-sub">点选：这件事该请谁</span>
+  </div>
+  <p class="lead">判断标准一句话：<b class="strong">做过几百次、错了代价小 → 放心交给系统1；第一次做、代价大、信息不全 → 必须请系统2</b>。下面六个场景，你点一次试试。</p>
+
+  <div class="quiz" id="sceneQuiz">
+    <div class="q-item">
+      <div class="q">1. 迎面走来一个认识的人，要不要打招呼？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统1 · 直觉就好</button>
+        <button class="q-opt" data-ok="0">系统2 · 先分析一下</button>
+      </div>
+      <div class="q-feedback">打了几十年招呼，错了代价几乎为零。这种事交给系统1，别浪费脑力。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 开车时前方突然窜出一条狗。</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统1 · 本能反应</button>
+        <button class="q-opt" data-ok="0">系统2 · 停车慢慢算</button>
+      </div>
+      <div class="q-feedback">这种要命的瞬间，慢半拍才是真出事。紧急避险正是系统1的主场——快就是对。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 现场心算：12 × 24 等于几？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统2 · 列竖式慢算</button>
+        <button class="q-opt" data-ok="0">系统1 · 估个大概就行</button>
+      </div>
+      <div class="q-feedback">两位数乘法不是你的"熟路"，系统1只会给你一个感觉。要准确答案，必须请系统2上阵：12×24=288。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 要不要给一家从没合作过的新供应商放一笔大额预付款？（金额为示意）</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统2 · 先查背景、谈条款</button>
+        <button class="q-opt" data-ok="0">系统1 · 聊得挺靠谱，先打款</button>
+      </div>
+      <div class="q-feedback">第一次打交道 + 钱出去就回不来 = 必须慢。系统1眼里的"靠谱"，是聊出来的好感，不是尽调出来的事实。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 下午赶版本，产品同学顺口加一个需求，你当场接不接？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统2 · "我看下排期，晚点回你"</button>
+        <button class="q-opt" data-ok="0">系统1 · 顺手的事，先答应</button>
+      </div>
+      <div class="q-feedback">忙起来最容易被系统1牵着走。停三秒不是不配合，是给"这个需求到底碰几个模块、挤掉什么"留出计算时间。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">6. 下班回家，拐去你常去的那家便利店买水。</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">系统1 · 熟门熟路</button>
+        <button class="q-opt" data-ok="0">系统2 · 比较三家店</button>
+      </div>
+      <div class="q-feedback">熟路、小事、低代价——天天如此的事，就该让系统1自动跑，把脑力省给大事。</div>
+    </div>
+  </div>
+  <div class="callout teal"><p><b>用法：</b>拿不准该用谁的时候，问一句——<b>"这事我做过几百次吗？错了代价大吗？"</b>两个答案分别是"做过"和"小"，放心快；否则，慢下来。</p></div>
+</section>
+
+<!-- ===== 视图：04 经典案例 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">经典案例：球拍和球</h2>
+    <span class="sec-sub">系统1最著名的一次抢跑</span>
+  </div>
+  <p class="lead">这是卡尼曼在《思考，快与慢》里反复用的一道题，也是世界上最出名的"系统1陷阱"：</p>
+  <div class="callout"><p style="font-family:var(--serif);font-size:1.1rem"><b>球拍和球一共 1.1 美元。球拍比球贵 1 美元。请问：球多少钱？</b></p></div>
+  <p>脑子里那个立刻蹦出来的答案，是<b>10 美分</b>。几乎所有人第一反应都是它——这就是系统1抢答。验证一下：如果球 10 美分，球拍就是 1.1 美元，加起来 <b>1.2 美元</b>，题目说的是 1.1 美元。不对。</p>
+  <p>请系统2出场列个小方程：球 x 美分，球拍 x+100 美分，2x+100=110，<b>x=5</b>。正解是<b>球 5 美分</b>（球拍 1.05 美元）。</p>
+  <div class="callout red"><p><b>可怕的地方：</b>这道题拿去给名校学生做，一大半人脱口而出 10 美分。不是他们不会算，是<b>系统1抢在系统2前面交了卷</b>。</p></div>
+
+  <p class="kicker">工作里的同款陷阱</p>
+  <p>把"球拍"换成你的工作日：<b>忙起来秒回邮件、秒答应临时需求</b>，当时觉得"顺手的事"，后来往往要返工。举个示意性的例子：一个赶版的下午（示意），你当场接下 3 个临时需求，其中 2 个后来被推翻，返工约两天（数字为示意）。如果当时停三秒、回一句"我看下排期，晚上回复你"，大半返工根本不会发生。</p>
+  <div class="callout teal"><p><b>发现没有：</b>这和"10 美分"是同一个陷阱——<b>第一反应太快，快到系统2根本没被叫起来</b>。</p></div>
+</section>
+
+<!-- ===== 视图：05 三个方法 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">让系统2接管的三个方法</h2>
+    <span class="sec-sub">不用变聪明，只要给它开工信号</span>
+  </div>
+  <p class="lead">系统2不是叫不醒，是你从来没给它发过"开工信号"。下面三个动作，每个都是一个信号。点开看用法。</p>
+
+  <div class="steps" id="takeSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">停三秒<small>开口、答应、签字之前，强制停一拍</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>系统1是即时反应，系统2需要启动时间。三秒不长，但足够让系统2从待机里坐起来。把口头禅从"行，我看看"换成<b>"我确认下，晚点回你"</b>。</p>
+        <div class="eg"><b>例：</b>邮件别开预览就回；群里@你的需求别当场拍板接。"晚点回你"四个字，就是给系统2发的开工通知。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">写下来<small>把直觉答案落到文字上，写不出来就是没想清</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>脑子里的"感觉不难"不是思考。逼自己写下三样：一句话目标、两个选项、最坏结果。<b>写的过程本身就是系统2上线</b>——它只能靠语言和符号干活。</p>
+        <div class="eg"><b>例：</b>脑子里觉得"这需求加一下很快"，写下来才发现要碰三个模块、影响两个排期表——于是你当场就知道不能乱接。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">找人挑刺<small>问一句："如果我错了，会错在哪？"</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>系统1最大的盲区是<b>看不见自己的盲区</b>。你自己想第二遍，往往还是同一个思路；换个人，一眼就能挑出反例。</p>
+        <div class="eg"><b>例：</b>拿你的判断找同事过一眼，专门问"这个结论有什么漏洞"。外人的挑刺，等于免费借了一个别人的系统2。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><span class="mnem">口诀</span><b>熟路放心开，新路踩刹车；大事停三秒，小事不折腾。</b></p></div>
+</section>
+
+<!-- ===== 视图：06 自测 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 关于系统1，哪个说法是对的？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">它慢、费力、要集中注意力</button>
+        <button class="q-opt" data-ok="1">它自动、瞬间、不费力，靠直觉和经验</button>
+        <button class="q-opt" data-ok="0">它主要用来算账和写合同</button>
+      </div>
+      <div class="q-feedback">系统1是那个自动跑的老员工：走路、打招呼、急刹车都归它。慢和费力是系统2的特征。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. "认知吝啬鬼"说的是什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">大脑天生省能，能交给系统1就不麻烦系统2</button>
+        <button class="q-opt" data-ok="0">人越小气越聪明</button>
+        <button class="q-opt" data-ok="0">大脑喜欢收集信息，越多越好</button>
+      </div>
+      <div class="q-feedback">大脑耗能高，所以默认走最省电的系统1。累、忙、急的时候尤其明显——这时候第一反应最不可信。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. 下面哪种情况，必须请系统2上岗？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">骑车上班保持平衡</button>
+        <button class="q-opt" data-ok="0">对熟人笑一下打招呼</button>
+        <button class="q-opt" data-ok="1">给一家新供应商放大额预付款</button>
+      </div>
+      <div class="q-feedback">第一次做 + 代价大 = 慢下来。骑车和打招呼是熟路，放心交给系统1。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 球拍和球一共 1.1 美元，球拍比球贵 1 美元。球多少钱？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">10 美分</button>
+        <button class="q-opt" data-ok="1">5 美分</button>
+        <button class="q-opt" data-ok="0">1 美元</button>
+      </div>
+      <div class="q-feedback">10 美分是系统1的经典抢答。正解：球 5 美分，球拍 1.05 美元，合计 1.1 美元。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 下面哪个不是"让系统2接管"的有效做法？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">开口前停三秒，说"晚点回你"</button>
+        <button class="q-opt" data-ok="0">把直觉答案写下来再核对</button>
+        <button class="q-opt" data-ok="1">越忙越信第一反应，逼自己快点决定</button>
+      </div>
+      <div class="q-feedback">越忙系统1越容易抢跑，"逼自己快"等于亲自把方向盘交回它手里。停三秒、写下来、找人挑刺，才是开工信号。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：07 作业与复盘 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">作业：抓一次自己的抢跑</h2>
+    <span class="sec-sub">本周逮住一次"秒回/秒答应"</span>
+  </div>
+  <p class="lead">不用做大事。这周留意一次你秒回邮件、秒答应需求、秒拍板的瞬间，把它记下来，按下面的问题复盘。</p>
+
+  <table class="tpl-table">
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>抢跑的那一次</th><td>什么事？我秒回/秒答应了什么？</td></tr>
+    <tr><th>当时的直觉答案</th><td>系统1脱口而出的是什么？</td></tr>
+    <tr><th>停三秒会看到什么</th><td>如果当时慢一下，能多想到什么？</td></tr>
+    <tr><th>我的慢动作</th><td>下次把哪句话挂在嘴边？（如"我确认下，晚点回你"）</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面四项依次填（一行一项），然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 1 课 · 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：第一性原理——拆到不能再拆。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  var t;
+  t = setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  t = setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  t = setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 卡片 ===== */
+  document.querySelectorAll('#sysCards .card').forEach(function(card){
+    card.addEventListener('click', function(){ card.classList.toggle('open'); });
+  });
+
+  /* ===== 03 场景判断 ===== */
+  document.querySelectorAll('#sceneQuiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+      });
+    });
+  });
+
+  /* ===== 05 三方法折叠 ===== */
+  document.querySelectorAll('#takeSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      document.querySelectorAll('#takeSteps .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 06 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。这周去抓一次自己的抢跑吧。' : ' —— 回去看 03、04 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== 07 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function buildText(){
+    var raw = reviewBox.value.trim();
+    if (!raw) return '';
+    var lines = raw.split('\n');
+    var out = ['【双系统思维复盘】'];
+    var keys = ['抢跑的那一次','当时的直觉答案','停三秒会看到什么','我的慢动作'];
+    keys.forEach(function(k, i){
+      out.push(k + '：' + (lines[i] || '（未填）'));
+    });
+    return out.join('\n');
+  }
+  btnGen.addEventListener('click', function(){
+    var txt = buildText();
+    if (!txt) { showToast('先在框里写点什么，再点生成'); return; }
+    reviewBox.value = txt;
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    function fallback(){
+      reviewBox.select();
+      try { document.execCommand('copy'); showToast('已复制到剪贴板'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第4课进阶（下）结构化分析与框架：乱麻怎么拆</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141B2E'/%3E%3Cpath d='M16 27V14M16 14L8.5 7.5M16 14l7.5-6.5' stroke='%23C08A2D' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='16' cy='27' r='2.4' fill='%23C94F38'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#141B2E; --ink-2:#1E2A4A; --paper:#F7F3EA; --paper-2:#EFE8D9;
+  --coral:#C94F38; --gold:#C08A2D; --teal:#3E7C6F; --teal-soft:#E3EDE7;
+  --text:#232A3B; --muted:#5A6478; --line:#D8CFBC; --white:#FBF8F1;
+  --serif:"Noto Serif SC",serif; --sans:"Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(192,138,45,.28)}
+
+/* ===== 首屏 ===== */
+.hero{position:relative;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#26375C 0%,var(--ink) 55%);color:var(--white);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 20px 0}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:880px;width:100%}
+.eyebrow{font-size:15px;letter-spacing:.5em;color:var(--gold);opacity:0;transform:translateY(10px)}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.15;margin:18px 0 14px;opacity:0;transform:translateY(18px)}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{font-size:clamp(1rem,2.6vw,1.3rem);color:rgba(251,248,241,.82);opacity:0;transform:translateY(14px)}
+.hero-meta{margin-top:20px;font-size:14px;color:rgba(251,248,241,.55);letter-spacing:.18em;opacity:0}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(251,248,241,.6);font-size:13px;letter-spacing:.3em;opacity:0;animation:hintFloat 2.2s ease-in-out .5s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.hero.ready .eyebrow{opacity:1;transform:none;transition:opacity .8s ease .4s,transform .8s ease .4s}
+.hero.ready h1{opacity:1;transform:none;transition:opacity 1s ease 1.6s,transform 1s ease 1.6s}
+.hero.ready .hero-sub{opacity:1;transform:none;transition:opacity .8s ease 2.6s,transform .8s ease 2.6s}
+.hero.ready .hero-meta{opacity:1;transition:opacity 1s ease 3.4s}
+.hero.ready .scroll-hint{opacity:1;transition:opacity 1s ease 4.2s}
+
+/* 议题树舞台 */
+.stage{position:relative;z-index:1;width:min(560px,92vw);margin-top:28px;opacity:0}
+.hero.ready .stage{opacity:1;transition:opacity 1s ease 1.2s}
+.tree-svg{width:100%;height:auto;display:block}
+.stage .n1{opacity:0;transition:opacity .5s ease}
+.stage.play .n1{opacity:1}
+.stage .l1{opacity:0;transition:opacity .6s ease .15s}
+.stage.play .l1{opacity:1}
+.stage .n2{opacity:0;transition:opacity .45s ease}
+.stage.done .n2{opacity:1}
+.stage .l2{opacity:0;transition:opacity .5s ease .1s}
+.stage.done .l2{opacity:1}
+.stage .mce-tag{opacity:0;transition:opacity .6s ease .5s}
+.stage.done .mce-tag{opacity:1}
+
+/* ===== 正文通用 ===== */
+main{max-width:900px;margin:0 auto;padding:0 22px 90px}
+section{padding:72px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:28px}
+.sec-num{font-family:var(--serif);font-weight:900;font-size:1.05rem;color:var(--coral);letter-spacing:.1em}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.3}
+.sec-sub{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+p{margin:14px 0;max-width:66ch}
+.lead{font-size:1.06rem;color:var(--ink-2)}
+b.strong{color:var(--coral)}
+.kicker{font-weight:700;color:var(--gold);letter-spacing:.05em}
+.callout{background:var(--paper-2);border-left:4px solid var(--gold);padding:16px 18px;margin:20px 0;border-radius:0 10px 10px 0}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft)}
+.callout.red{border-left-color:var(--coral);background:#F6E6E0}
+.callout p{margin:6px 0}
+.mnem{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.95rem;background:var(--ink);color:var(--white);padding:2px 10px;border-radius:6px;margin-right:8px}
+
+/* 卡片组 */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 6px 18px rgba(20,27,46,.08)}
+.card h4{font-family:var(--serif);font-size:1.08rem;margin-bottom:4px}
+.card .why{font-size:.93rem;color:var(--muted);display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.card.open .why{display:block}
+.card .fix{font-size:.92rem;display:none;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);color:var(--ink)}
+.card.open .fix{display:block}
+.card .fix b{color:var(--teal)}
+.card .hint{font-size:12px;color:var(--gold);margin-top:10px;opacity:.85}
+
+/* 三态行 */
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.tri-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .18s ease}
+.tri-item:hover{border-color:var(--coral)}
+.tri-item h4{font-family:var(--serif);font-size:1.3rem;font-weight:900;color:var(--ink)}
+.tri-item .sub{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.tri-item .detail{display:none;font-size:.92rem;border-top:1px dashed var(--line);padding-top:10px}
+.tri-item.open{border-color:var(--coral);background:#FDF7F4}
+.tri-item.open .detail{display:block}
+.tri-item .hint2{font-size:12px;color:var(--muted);margin-top:8px}
+.tri-item.open .hint2{display:none}
+
+/* 步骤卡 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.step-head:hover{background:#FDF8EE}
+.step-no{font-family:var(--serif);font-weight:900;color:var(--white);background:var(--ink);border-radius:8px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.92rem}
+.step-title{font-weight:700;font-size:1.02rem}
+.step-title small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.step-arrow{margin-left:auto;color:var(--gold);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(90deg)}
+.step-body{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+.step.open .step-body{display:block}
+.step-body p{margin:10px 0}
+.step-body .eg{background:var(--paper-2);border-radius:8px;padding:12px 14px;font-size:.92rem;margin-top:10px}
+.step-body .eg b{color:var(--coral)}
+.formula{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip{font-size:.88rem;font-weight:600;padding:5px 12px;border-radius:20px;border:1.5px solid var(--gold);color:#8A641C;background:rgba(192,138,45,.1)}
+.chip.s{color:var(--teal);border-color:var(--teal);background:rgba(62,124,111,.1)}
+
+/* 5Why 拆解器（深色实验面板） */
+.lab{background:var(--ink);color:var(--white);border-radius:18px;padding:28px 24px;margin:26px 0}
+.lab h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:6px}
+.lab .desc{font-size:.93rem;color:rgba(251,248,241,.72);max-width:70ch}
+.why-start-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:stretch}
+.why-start-row .why-lab-in{flex:1;min-width:200px;background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);color:var(--white);border-radius:10px;padding:11px 14px;font-family:var(--sans);font-size:1rem}
+.why-start-row .why-lab-in:focus{outline:none;border-color:var(--gold)}
+.why-start-row .why-lab-in::placeholder{color:rgba(251,248,241,.4)}
+.why-row{background:rgba(251,248,241,.06);border:1px solid rgba(251,248,241,.14);border-radius:10px;padding:12px 14px;margin-top:12px}
+.why-badge{display:inline-block;font-size:12px;font-weight:700;color:var(--gold);border:1px solid rgba(192,138,45,.6);border-radius:20px;padding:1px 10px;margin-bottom:8px;letter-spacing:.05em}
+.why-q{font-size:.96rem;color:var(--white);margin-bottom:8px}
+.why-in{width:100%;min-height:44px;background:rgba(251,248,241,.1);border:1px solid rgba(251,248,241,.25);border-radius:8px;padding:10px 12px;color:var(--white);font-family:var(--sans);font-size:1rem}
+.why-in:focus{outline:none;border-color:var(--gold)}
+.why-in::placeholder{color:rgba(251,248,241,.4)}
+.why-note{font-size:13px;color:rgba(251,248,241,.65);margin-top:10px;min-height:20px}
+.why-out{margin-top:14px;width:100%;min-height:120px;background:rgba(20,27,46,.55);border:1px solid rgba(192,138,45,.45);border-radius:10px;color:#EAE0C6;padding:12px;font-size:1rem;line-height:1.8;font-family:var(--sans);resize:vertical}
+.why-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.m-btn{background:transparent;border:1.5px solid rgba(192,138,45,.7);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:.9rem;padding:11px 18px;border-radius:9px;cursor:pointer;transition:background .15s;min-height:44px}
+.m-btn:hover{background:rgba(192,138,45,.15)}
+.m-btn.plain{border-color:rgba(251,248,241,.4);color:rgba(251,248,241,.85)}
+.m-btn.plain:hover{background:rgba(251,248,241,.1)}
+
+/* 自测 */
+.quiz{display:flex;flex-direction:column;gap:18px;margin:22px 0}
+.q-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px}
+.q-item .q{font-weight:700;margin-bottom:10px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 14px;font-size:.94rem;cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .15s,background .15s;min-height:44px}
+.q-opt:hover{border-color:var(--gold)}
+.q-opt.correct{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.q-opt.wrong{border-color:var(--coral);background:#F6E6E0}
+.q-feedback{display:none;font-size:.9rem;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--paper-2)}
+.q-item.done .q-feedback{display:block}
+.q-score{margin-top:8px;font-family:var(--serif);font-weight:700;color:var(--gold);min-height:22px}
+
+/* 复盘模板 */
+.tpl-table{width:100%;border-collapse:collapse;margin:18px 0;table-layout:fixed}
+.tpl-table th,.tpl-table td{border:1px solid var(--line);padding:9px 11px;font-size:.92rem;text-align:left;vertical-align:top}
+.tpl-table th{background:var(--paper-2);font-weight:700;width:26%}
+.tpl-table td{background:var(--white)}
+textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--sans);font-size:1rem;background:var(--white);resize:vertical}
+.btn{border:none;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;font-size:.92rem;padding:11px 20px;border-radius:9px;cursor:pointer;transition:background .15s,transform .15s;min-height:44px}
+.btn:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);font-size:.9rem;padding:10px 20px;border-radius:24px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:34px 22px 44px;background:var(--ink);color:rgba(251,248,241,.72);text-align:center;font-size:.9rem}
+footer .done-line{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:1.06rem;margin-bottom:8px}
+
+/* 窄屏 */
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .tri{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-sub{margin-left:0}
+  .lab{padding:22px 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero .hero-sub,.hero .hero-meta,.hero .scroll-hint,.hero .stage{opacity:1;transform:none;transition:none}
+  .stage .n1,.stage .l1,.stage .n2,.stage .l2,.stage .mce-tag{opacity:1;transition:none}
+  .scroll-hint{animation:none}
+  .card,.tri-item,.step-head,.q-opt,.btn,.m-btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 视图：首屏 ===== -->
+<header class="hero" id="hero">
+  <div class="stage" id="stage" aria-hidden="true">
+    <svg class="tree-svg" viewBox="0 0 560 232" fill="none">
+      <!-- 连线：根 -> 一层 -->
+      <path class="l1" d="M280 38V60H80V82" stroke="rgba(192,138,45,.55)" stroke-width="1.5"/>
+      <path class="l1" d="M280 38V82" stroke="rgba(192,138,45,.55)" stroke-width="1.5"/>
+      <path class="l1" d="M280 38V60H480V82" stroke="rgba(192,138,45,.55)" stroke-width="1.5"/>
+      <!-- 连线：一层 -> 二层 -->
+      <path class="l2" d="M80 112V134H47V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <path class="l2" d="M80 112V134H127V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <path class="l2" d="M280 112V134H245V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <path class="l2" d="M280 112V134H325V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <path class="l2" d="M480 112V134H445V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <path class="l2" d="M480 112V134H525V156" stroke="rgba(192,138,45,.4)" stroke-width="1.2"/>
+      <!-- 根节点 -->
+      <g>
+        <rect x="205" y="4" width="150" height="34" rx="7" fill="rgba(192,138,45,.18)" stroke="#C08A2D" stroke-width="1.5"/>
+        <text x="280" y="26" text-anchor="middle" font-family="Noto Serif SC,serif" font-weight="700" font-size="13" fill="#E8C37A">问题：项目延期两周</text>
+      </g>
+      <!-- 一层节点 -->
+      <g class="n1">
+        <rect x="24" y="82" width="112" height="30" rx="6" fill="rgba(251,248,241,.08)" stroke="rgba(251,248,241,.4)" stroke-width="1.3"/>
+        <text x="80" y="102" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-weight="700" font-size="12.5" fill="#FBF8F1">需求侧</text>
+      </g>
+      <g class="n1">
+        <rect x="224" y="82" width="112" height="30" rx="6" fill="rgba(251,248,241,.08)" stroke="rgba(251,248,241,.4)" stroke-width="1.3"/>
+        <text x="280" y="102" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-weight="700" font-size="12.5" fill="#FBF8F1">开发侧</text>
+      </g>
+      <g class="n1">
+        <rect x="424" y="82" width="112" height="30" rx="6" fill="rgba(251,248,241,.08)" stroke="rgba(251,248,241,.4)" stroke-width="1.3"/>
+        <text x="480" y="102" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-weight="700" font-size="12.5" fill="#FBF8F1">测试侧</text>
+      </g>
+      <!-- 二层节点 -->
+      <g class="n2">
+        <rect x="8" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="47" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">需求变更多</text>
+      </g>
+      <g class="n2">
+        <rect x="88" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="127" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">评审走过场</text>
+      </g>
+      <g class="n2">
+        <rect x="206" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="245" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">联调起步晚</text>
+      </g>
+      <g class="n2">
+        <rect x="286" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="325" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">返工反复多</text>
+      </g>
+      <g class="n2">
+        <rect x="406" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="445" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">测试环境少</text>
+      </g>
+      <g class="n2">
+        <rect x="486" y="156" width="78" height="26" rx="5" fill="rgba(251,248,241,.05)" stroke="rgba(251,248,241,.22)" stroke-width="1"/>
+        <text x="525" y="173" text-anchor="middle" font-size="10.5" fill="rgba(251,248,241,.85)">用例写得晚</text>
+      </g>
+      <!-- 收尾标签 -->
+      <text class="mce-tag" x="280" y="216" text-anchor="middle" font-size="12.5" letter-spacing="4" fill="#C08A2D">不重 · 不漏 · 每层同一维度</text>
+    </svg>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">思 维 框 架 实 战 课 · 思 考 篇 · 第 6 课</div>
+    <h1>结构化分析<span class="accent">怎么拆</span></h1>
+    <div class="hero-sub">一团乱麻的问题，拆成一棵不重不漏的树。<br>拆对了，答案自己会浮出来。</div>
+    <div class="hero-meta">议题树 · 假设树 · 5Why · MECE · 自创框架</div>
+  </div>
+  <div class="scroll-hint">向 下 开 课</div>
+</header>
+
+<main>
+<!-- ===== 视图：01 三种树 ===== -->
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">三种树：拆开问题的三把刀</h2>
+    <span class="sec-sub">同一个问题，三种拆法</span>
+  </div>
+  <p class="lead">面对一团乱麻，第一反应是"我该从哪下手"。答案不是凭感觉挑一个方向，而是<b class="strong">选对一种拆法</b>。常用的就三种：议题树、假设树、是否树。点开看区别。</p>
+
+  <div class="tri" id="triTrees">
+    <div class="tri-item">
+      <h4>议题树</h4>
+      <div class="sub">Issue Tree · 拆问题</div>
+      <div class="detail">把一个大问题逐层拆成子问题："延期"拆成需求、开发、测试三块，每块再往下拆。<b>它回答"这个问题可以分成哪些部分"</b>。适合：完全陌生的问题，先找全分析角度，不漏。</div>
+      <p class="hint2">点开看怎么用</p>
+    </div>
+    <div class="tri-item">
+      <h4>假设树</h4>
+      <div class="sub">Hypothesis Tree · 押答案</div>
+      <div class="detail">先押一个假设："延期是测试环境不够导致的"，再往下拆<b>"如果它成立，我应该看到什么证据"</b>。证据支持就深入，不支持就换假设。适合：已有方向、要快速验证，不绕弯路。</div>
+      <p class="hint2">点开看怎么用</p>
+    </div>
+    <div class="tri-item">
+      <h4>是否树</h4>
+      <div class="sub">Yes / No Tree · 做排查</div>
+      <div class="detail">每个节点是一道判断题，用"是 / 否"一条路一条路分流："复现了吗？→ 有日志吗？→ 是配置问题吗？"。<b>它回答"现在该走哪条路"</b>。适合：排查故障、一步步收敛答案。</div>
+      <p class="hint2">点开看怎么用</p>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>怎么选：</b>问题完全陌生 → 议题树先铺开；心里有个怀疑对象 → 假设树去验证；情况二选一、要快速定位 → 是否树做排查。<b>拆错树，比不拆还耽误事。</b></p></div>
+</section>
+
+<!-- ===== 视图：02 5Why + 鱼骨图 ===== -->
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">5Why 与鱼骨图：问到根上</h2>
+    <span class="sec-sub">现象不是原因，中间层也不是</span>
+  </div>
+  <p class="lead">拆树解决"面"的问题：保证角度全。但每个分支里<b class="strong">为什么会这样</b>，要靠纵向追问——这就是 5Why。另外，人脑找原因容易盯着最近那一件事漏其他维度，鱼骨图用固定维度帮你防漏。</p>
+
+  <p class="kicker">鱼骨图的六个固定维度：别只盯"人"，把这六格过一遍</p>
+  <div class="formula">
+    <span class="chip">人 · 谁在做、能力够不够</span>
+    <span class="chip">机 · 工具、设备、环境够不够</span>
+    <span class="chip s">料 · 输入物、数据、材料对不对</span>
+    <span class="chip s">法 · 流程、方法、规范合不合理</span>
+    <span class="chip">环 · 现场约束、时间、外部条件</span>
+    <span class="chip">测 · 怎么发现的、标准是什么</span>
+  </div>
+  <p>用法很朴素：原因出来后，扫一眼这六格——是不是只查了"人"？"机"和"法"看了吗？<b>大多数漏判，都漏在没扫这六格。</b></p>
+
+  <div class="lab" id="whyLab">
+    <h3>5Why 拆解器：追五层，看根因长什么样</h3>
+    <p class="desc">先写下一个真实问题，然后一层一层追"为什么"。每层填完答案，点「再追一层」。注意：第一层答案通常不是根因——它只是下一层问题的入口。</p>
+    <div class="why-start-row">
+      <input type="text" class="why-lab-in" id="whyStart" placeholder="写下一个问题，例如：线上接口超时率升高" aria-label="初始问题">
+      <button class="m-btn" id="btnAsk">再追一层为什么</button>
+    </div>
+    <div id="whyChain"></div>
+    <div class="why-note" id="whyNote">已经追了 0 层。一般追到 3-5 层、答案落到"能动手改"的那一层，就停。</div>
+    <textarea class="why-out" id="whyOut" readonly placeholder="追问链会自动生成在这里，追完可以复制走。"></textarea>
+    <div class="why-btn-row">
+      <button class="m-btn plain" id="btnWhyCopy">复制追问链</button>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><b>关键认知：</b>5Why 不是"必须问满五次"，是<b>问到答案能变成行动为止</b>。问一层就说"根因找到了"，多半是把中间层当结论——这是高频错误，下一节细讲。</p></div>
+</section>
+
+<!-- ===== 视图：03 经典框架为什么管用 ===== -->
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">经典框架的底层密码：MECE</h2>
+    <span class="sec-sub">3C、SWOT、五力为什么是它们</span>
+  </div>
+  <p class="lead">3C、SWOT、波特五力，这些框架看起来各不相同，底层是同一个动作：<b class="strong">把影响结果的变量，按同一维度切成不重叠的几块，合起来又盖全</b>。这个动作有个名字——MECE（Mutually Exclusive, Collectively Exhausted）：相互独立，完全穷尽。</p>
+
+  <table class="tpl-table">
+    <colgroup><col style="width:20%"><col style="width:30%"><col style="width:50%"></colgroup>
+    <tr><th>框架</th><td>它在分什么</td></tr>
+    <tr><th>3C</th><td>一个生意的处境：公司自己（Company）× 客户要什么（Customer）× 对手在做什么（Competitor）</td></tr>
+    <tr><th>SWOT</th><td>一个选择的条件：内部两面（优势 S / 劣势 W）× 外部两面（机会 O / 威胁 T）</td></tr>
+    <tr><th>波特五力</th><td>一个行业的赚钱难度：现有竞争 × 新进入者 × 替代品 × 供方议价 × 买方议价</td></tr>
+  </table>
+
+  <div class="callout"><p><b>为什么它们管用：</b>你自己拆，容易"重一块、漏一块"——重了等于白分析两遍，漏了等于在盲区里做决策。这些老牌框架，本质是前人替你把"不重不漏"这件事做完了。<b>学框架不是背名词，是借他们切好的那把刀。</b></p></div>
+</section>
+
+<!-- ===== 视图：04 自创框架四步 ===== -->
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">没有现成框架时：自己造一个</h2>
+    <span class="sec-sub">列全 → 分组 → 校验 → 命名</span>
+  </div>
+  <p class="lead">现实问题很少正好落在 3C 或 SWOT 里。但造一个自己的框架并不玄，就四步。点开看每步做什么。</p>
+
+  <div class="steps" id="buildSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">列全变量<small>先不管分类，想到什么写什么</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>拿张纸，把跟这个问题沾边的所有因素一口气写下来，<b>这一步禁止分类、禁止评价</b>。分类会让你边写边丢。目标只有一个：不漏。</p>
+        <div class="eg"><b>例：</b>"为什么线上报错变多"——写：人累、发布急、监控少、测试覆盖低、最近换了组件、日志没接、新人不熟、回滚慢……先全倒出来。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">按同一维度分组<small>问一句：这些事是同一层的吗</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>把倒出来的东西归类。分组的尺子要<b>同一把</b>：按"谁的环节"分，就全按环节分；按"内部外部"分，就全按内外分。一把尺子分到底，组间才不会重叠。</p>
+        <div class="eg"><b>例：</b>上面那堆，按"人 / 流程 / 工具 / 环境"分：人累、新人不熟 → 人；发布急、回滚慢 → 流程；监控少、日志没接 → 工具；换了组件、测试覆盖低 → 环境与输入。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">MECE 校验<small>两两看重不重，合起来看漏不漏</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>两两检查：有没有两件事其实说的是一块？再整体扫一遍：刚才列全的变量，有没有哪个没进组？有重叠就合并，有漏就补组。<b>这步是框架和"随便分堆"的分界线。</b></p>
+        <div class="eg"><b>例：</b>"测试覆盖低"放进"环境与输入"有点勉强——它其实是"质量环节"。于是补一组，变成：人 / 流程 / 工具 / 质量 / 环境。重叠消失，组也盖全了。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">命名成型<small>每组起个短名，下次直接套</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>给每组一个两三个字的名字，你的私人框架就有了。<b>下次遇到同类问题，不用重新拆，直接按这几组挨个过。</b>框架是复用出来的，用三次，它就长在你脑子里了。</p>
+        <div class="eg"><b>例：</b>这就是为什么资深工程师排查故障快——他脑子里已经有一棵自己的"故障树"，不用每次从零开始拆。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：05 五个坑 + 四条检验 ===== -->
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">五个坑，和四条检验标准</h2>
+    <span class="sec-sub">拆错了比不拆更糟</span>
+  </div>
+  <p class="lead">拆开一棵树很容易，拆对很难。下面五个坑都很眼熟，点开看各自怎么破。</p>
+
+  <div class="steps" id="trapSteps">
+    <div class="step">
+      <div class="step-head"><span class="step-no">1</span><span class="step-title">框架套错对象<small>拿战略工具去查故障</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>用 SWOT 分析"为什么线上报错"，或者用五力分析"明天先做哪件事"。<b>每个框架有它的适用对象，拿错刀就切不动菜。</b></p>
+        <div class="eg"><b>破法：</b>动框架前先问：我现在要回答的是"处境判断"还是"根因排查"还是"决策分流"？根因用 5Why / 鱼骨，定位用是否树，处境才用 3C / SWOT。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">2</span><span class="step-title">漏分支<small>拆到一层就停，留了盲区</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>"延期"只拆了需求和开发，忘了测试、忘了发布环境。<b>你在盲区里分析得越认真，结论偏得越稳。</b></p>
+        <div class="eg"><b>破法：</b>每拆完一层，扫一眼鱼骨六维度——人、机、料、法、环、测，哪格还没拆？</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">3</span><span class="step-title">混层级<small>把维度和具体原因放同一层</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>同一层里既有"需求"这种维度词，又有"评审会没开"这种具体事件——<b>尺子不统一，下面越拆越乱。</b></p>
+        <div class="eg"><b>破法：</b>同一层的分支必须是同一级别的抽象。维度词只用来开层，具体原因永远放在再下一层。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">4</span><span class="step-title">把假设当结论<small>问一层就宣布根因找到</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>"延期是因为人不够"——这只是第一层答案。再问：为什么人不够？为什么偏偏这时候不够？<b>中间层当根因，整改方案必然治标不治本。</b></p>
+        <div class="eg"><b>破法：</b>每层答案都问自己一句："这个答案能直接变成行动吗？"不能，就继续追。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-no">5</span><span class="step-title">为凑框架硬塞<small>填表游戏，越填越不像回事</small></span><span class="step-arrow">›</span></div>
+      <div class="step-body">
+        <p>SWOT 四格硬凑，两格写得很勉强；五力里有一力跟这事毫无关系。<b>框架是工具不是考试，该改结构就改。</b></p>
+        <div class="eg"><b>破法：</b>某一格你憋了五分钟写不出东西——那不是你笨，是这个框架不适合这个问题。回到上一步，自己造一组。</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="kicker" style="margin-top:26px">拆完之后，用这四条验收你的树</p>
+  <div class="cards" id="stdCards">
+    <div class="card open" style="cursor:default">
+      <h4>① 不重</h4>
+      <div class="why" style="display:block">任意两个分支，合起来说的不是同一件事。重了，分析量等于白花一半。</div>
+    </div>
+    <div class="card open" style="cursor:default">
+      <h4>② 不漏</h4>
+      <div class="why" style="display:block">所有可能的情况都被覆盖。漏了，结论是在盲区里做的。</div>
+    </div>
+    <div class="card open" style="cursor:default">
+      <h4>③ 同一维度</h4>
+      <div class="why" style="display:block">同一层分支用同一把尺子切。混了层级，树就塌了。</div>
+    </div>
+    <div class="card open" style="cursor:default">
+      <h4>④ 上下可对接</h4>
+      <div class="why" style="display:block">父节点 = 子节点之和；下一层拼起来，正好能回答上一层的问题。</div>
+    </div>
+  </div>
+
+  <div class="callout teal"><p><span class="mnem">口诀</span>分层不混层，追问追到根；先列全变量，再按 MECE 分组。</p></div>
+</section>
+
+<!-- ===== 视图：06 自测 ===== -->
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">自测：五道题</h2>
+    <span class="sec-sub">答对 4 题，这课就过</span>
+  </div>
+
+  <div class="quiz" id="quiz">
+    <div class="q-item">
+      <div class="q">1. 议题树最主要的用途是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">先押一个答案，再找证据</button>
+        <button class="q-opt" data-ok="1">把大问题逐层拆开，找全分析角度</button>
+        <button class="q-opt" data-ok="0">用是/否一步步分流做排查</button>
+      </div>
+      <div class="q-feedback">议题树负责"铺开"：陌生问题先拆全角度。押答案是假设树，分流排查是是否树。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">2. 5Why 一般追到什么程度就停？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">必须正好问满五次</button>
+        <button class="q-opt" data-ok="1">追到答案能直接变成行动的根因，通常 3-5 层</button>
+        <button class="q-opt" data-ok="0">追到有人承认错误为止</button>
+      </div>
+      <div class="q-feedback">次数不是目的。每层答案都问："它能直接变成行动吗？"不能就继续追。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">3. MECE 说的是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="1">相互独立、完全穷尽：分支之间不重，合起来不漏</button>
+        <button class="q-opt" data-ok="0">每个分支都要有数据支撑</button>
+        <button class="q-opt" data-ok="0">树越细越好，能拆多细拆多细</button>
+      </div>
+      <div class="q-feedback">不重不漏是所有经典框架的底层动作。你自己拆容易重一块漏一块，所以才借框架的刀。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">4. 鱼骨图"人机料法环测"六维度的作用是？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">把原因按重要程度排序</button>
+        <button class="q-opt" data-ok="1">从固定维度系统排查原因，防止只盯最近的一件事而漏项</button>
+        <button class="q-opt" data-ok="0">给每个原因打分</button>
+      </div>
+      <div class="q-feedback">人脑找原因容易盯着最近那一件事。每拆完一层扫一遍六格，是防漏的土办法，但很好用。</div>
+    </div>
+    <div class="q-item">
+      <div class="q">5. 自创一个分析框架，第一步该做什么？</div>
+      <div class="q-opts">
+        <button class="q-opt" data-ok="0">先给各组起名字</button>
+        <button class="q-opt" data-ok="1">把所有相关变量先列全，这一步不分类、不评价</button>
+        <button class="q-opt" data-ok="0">先选一个最像的现成框架硬套</button>
+      </div>
+      <div class="q-feedback">顺序是：列全 → 分组 → MECE 校验 → 命名。边写边分类会漏，先倒全再动刀。</div>
+    </div>
+  </div>
+  <div class="q-score" id="qScore"></div>
+</section>
+
+<!-- ===== 视图：07 作业与复盘 ===== -->
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2 class="sec-title">作业：拆一个真问题</h2>
+    <span class="sec-sub">用本课的树拆一件真实的事</span>
+  </div>
+  <p class="lead">这周挑一个你手上真实的问题：一个反复出现的小故障、一个总是卡住的流程、一个想不通的现象都行。拆完填复盘。</p>
+
+  <table class="tpl-table">
+    <colgroup><col style="width:26%"><col style="width:74%"></colgroup>
+    <tr><th>复盘项</th><td>我的答案</td></tr>
+    <tr><th>要拆的问题</th><td>一句话写清楚，是什么现象？</td></tr>
+    <tr><th>用了哪种树</th><td>议题树 / 假设树 / 是否树？为什么选它？</td></tr>
+    <tr><th>追问链</th><td>5Why 追到第几层？最后一层答案能直接行动吗？</td></tr>
+    <tr><th>MECE 自检</th><td>分支之间重不重？六维度扫过没有漏？</td></tr>
+    <tr><th>结论与下一步</th><td>这次拆出的根因是什么？下一步先动哪一项？</td></tr>
+  </table>
+
+  <textarea id="reviewBox" placeholder="按上面的问题逐行填，一行一项，然后点「生成复盘文本」复制到你的笔记里。"></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btnGen">生成复盘文本</button>
+    <button class="btn ghost" id="btnCopy">复制到剪贴板</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="done-line">第 4 课进阶（下）· 完成</div>
+  进度：思考篇 8 课 + 沟通篇 3 课<br>
+  下一课预告：第5课·认知偏差。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ===== 首屏动画序列 ===== */
+  var hero = document.getElementById('hero');
+  var stage = document.getElementById('stage');
+  setTimeout(function(){ hero.classList.add('ready'); }, 300);
+  setTimeout(function(){ stage.classList.add('play'); }, 1500);
+  setTimeout(function(){ stage.classList.add('done'); }, 3400);
+
+  /* ===== 01 三种树 ===== */
+  document.querySelectorAll('#triTrees .tri-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      document.querySelectorAll('#triTrees .tri-item').forEach(function(x){ x.classList.remove('open'); });
+      item.classList.add('open');
+    });
+  });
+
+  /* ===== 02 5Why 拆解器 ===== */
+  var whyStart = document.getElementById('whyStart');
+  var btnAsk = document.getElementById('btnAsk');
+  var whyChain = document.getElementById('whyChain');
+  var whyOut = document.getElementById('whyOut');
+  var whyNote = document.getElementById('whyNote');
+  var layers = []; /* 每层答案字符串 */
+
+  function buildOut(){
+    var start = whyStart.value.trim() || '（先写下问题）';
+    var lines = ['【5Why 追问链】', '现象：' + start];
+    layers.forEach(function(a, i){
+      lines.push('第' + (i+1) + '层 为什么？→ ' + (a.trim() || '（这层还没填）'));
+    });
+    if (layers.length > 0) {
+      var last = layers[layers.length-1].trim();
+      if (last) lines.push(last.length > 0 ? '自查：这个答案能直接变成行动吗？不能就继续追。' : '');
+    }
+    whyOut.value = lines.join('\n');
+    whyNote.textContent = '已经追了 ' + layers.length + ' 层。一般追到 3-5 层、答案落到"能动手改"的那一层，就停。';
+  }
+
+  function addLayer(){
+    var prev = layers.length === 0 ? whyStart.value.trim() : layers[layers.length-1].trim();
+    var idx = layers.length;
+    var row = document.createElement('div');
+    row.className = 'why-row';
+    var q = prev ? ('为什么「' + prev + '」？') : '为什么会这样？';
+    row.innerHTML = '<span class="why-badge">第' + (idx+1) + '层</span>' +
+      '<div class="why-q">' + q + '</div>' +
+      '<input type="text" class="why-in" placeholder="这一层的答案是？" aria-label="第' + (idx+1) + '层答案">';
+    whyChain.appendChild(row);
+    var inp = row.querySelector('.why-in');
+    layers.push('');
+    inp.addEventListener('input', function(){
+      layers[idx] = inp.value;
+      buildOut();
+    });
+    inp.focus();
+    buildOut();
+  }
+
+  btnAsk.addEventListener('click', function(){
+    if (layers.length >= 5) { showToast('五层差不多了，再追边际收益很低'); return; }
+    if (!whyStart.value.trim() && layers.length === 0) { showToast('先写下你的问题'); whyStart.focus(); return; }
+    addLayer();
+  });
+  whyStart.addEventListener('input', buildOut);
+
+  /* 复制追问链 */
+  document.getElementById('btnWhyCopy').addEventListener('click', function(){
+    var txt = whyOut.value.trim();
+    if (!txt) { showToast('还没有可复制的追问链'); return; }
+    doCopy(txt);
+  });
+
+  /* ===== 04/05 折叠步骤 ===== */
+  document.querySelectorAll('#buildSteps .step-head, #trapSteps .step-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var step = head.parentNode;
+      var open = step.classList.contains('open');
+      var group = step.parentNode.id;
+      document.querySelectorAll('#' + group + ' .step').forEach(function(x){ x.classList.remove('open'); });
+      if (!open) step.classList.add('open');
+    });
+  });
+
+  /* ===== 06 自测 ===== */
+  var score = 0;
+  document.querySelectorAll('#quiz .q-item').forEach(function(item){
+    var opts = item.querySelectorAll('.q-opt');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if (item.classList.contains('done')) return;
+        item.classList.add('done');
+        var ok = opt.getAttribute('data-ok') === '1';
+        if (ok) {
+          opt.classList.add('correct');
+          score += 1;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(function(o){ if (o.getAttribute('data-ok') === '1') o.classList.add('correct'); });
+        }
+        document.getElementById('qScore').textContent = '答对 ' + score + ' / 5' + (score >= 4 ? ' —— 过关了。去拆一个真问题吧。' : ' —— 回去看 01、02、03 节，再来一遍。');
+      });
+    });
+  });
+
+  /* ===== toast 与复制工具 ===== */
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+  function doCopy(txt){
+    function fallback(){
+      try { toast.select && document.execCommand('copy'); showToast('已复制'); }
+      catch(e){ showToast('请手动复制'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ showToast('已复制到剪贴板'); }, fallback);
+    } else { fallback(); }
+  }
+
+  /* ===== 07 复盘生成 ===== */
+  var reviewBox = document.getElementById('reviewBox');
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  btnGen.addEventListener('click', function(){
+    var raw = reviewBox.value.trim();
+    if (!raw) { showToast('先在框里写点什么，再点生成'); return; }
+    var lines = raw.split('\n');
+    var keys = ['要拆的问题','用了哪种树','追问链','MECE 自检','结论与下一步'];
+    var out = ['【结构化分析复盘】'];
+    keys.forEach(function(k, i){ out.push(k + '：' + (lines[i] || '（未填）')); });
+    reviewBox.value = out.join('\n');
+    showToast('已生成，可以复制了');
+  });
+  btnCopy.addEventListener('click', function(){
+    var txt = reviewBox.value.trim();
+    if (!txt) { showToast('没有可复制的内容'); return; }
+    doCopy(txt);
+  });
+
+  buildOut();
+})();
+</script>
+</body>
+</html>
